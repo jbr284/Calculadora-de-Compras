@@ -1,10 +1,10 @@
 const CACHE_NAME = "calculadora-compras-v1";
 const URLS_TO_CACHE = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "./icon-192.png",
-  "./icon-512.png",
+  "/Calculadora-de-Compras/",
+  "/Calculadora-de-Compras/index.html",
+  "/Calculadora-de-Compras/manifest.json",
+  "/Calculadora-de-Compras/icon-192.png",
+  "/Calculadora-de-Compras/icon-512.png",
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"
 ];
