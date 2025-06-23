@@ -53,58 +53,82 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
   <script>
     let itens = JSON.parse(localStorage.getItem('itens')) || [];
-    function salvarItens() { localStorage.setItem('itens', JSON.stringify(itens)); }
-    document.getElementById('adicionarItem').addEventListener('click', () => {
+
+    function salvarItens() {
+      localStorage.setItem('itens', JSON.stringify(itens));
+    }
+
+    document.getElementById('adicionarItem').addEventListener('click', function () {
       const produto = document.getElementById('produto').value;
       const quantidade = parseInt(document.getElementById('quantidade').value);
       const precoUnitario = parseFloat(document.getElementById('precoUnitario').value);
+
       if (!produto || isNaN(quantidade) || isNaN(precoUnitario)) {
         alert("Por favor, preencha todos os campos corretamente.");
         return;
       }
+
       const total = precoUnitario * quantidade;
       itens.push({ produto, quantidade, precoUnitario, total });
+
       salvarItens();
+
       document.getElementById('produto').value = '';
       document.getElementById('quantidade').value = '';
       document.getElementById('precoUnitario').value = '';
+
       atualizarTabela();
     });
+
     function atualizarTabela() {
       const tabela = document.getElementById('tabelaItens').getElementsByTagName('tbody')[0];
       tabela.innerHTML = '';
-      itens.forEach(item => {
+      itens.forEach(function (item) {
         const row = tabela.insertRow();
         row.innerHTML = "<td>" + item.produto + "</td><td>" + item.quantidade + "</td><td>R$ " + item.precoUnitario.toFixed(2) + "</td><td>R$ " + item.total.toFixed(2) + "</td>";
       });
-      const totalCompra = itens.reduce((total, item) => total + item.total, 0);
+      const totalCompra = itens.reduce(function (total, item) {
+        return total + item.total;
+      }, 0);
       document.getElementById('totalCompra').textContent = "Total da Compra: R$ " + totalCompra.toFixed(2);
     }
-    document.getElementById('gerarPDF').addEventListener('click', () => {
+
+    document.getElementById('gerarPDF').addEventListener('click', function () {
       const nomeLista = document.getElementById('nomeLista').value || 'Lista_de_Compras';
-      const { jsPDF } = window.jspdf;
+      const jsPDF = window.jspdf.jsPDF;
       const doc = new jsPDF();
       doc.text("Lista de Compras: " + nomeLista, 20, 20);
       doc.autoTable({
         head: [['Produto', 'Quantidade', 'Preço Unitário', 'Total']],
-        body: itens.map(item => [item.produto, item.quantidade, item.precoUnitario.toFixed(2), item.total.toFixed(2)]),
+        body: itens.map(function (item) {
+          return [item.produto, item.quantidade, item.precoUnitario.toFixed(2), item.total.toFixed(2)];
+        })
       });
-      const totalCompra = itens.reduce((total, item) => total + item.total, 0);
+      const totalCompra = itens.reduce(function (total, item) {
+        return total + item.total;
+      }, 0);
       doc.text("Total: R$ " + totalCompra.toFixed(2), 20, doc.lastAutoTable.finalY + 10);
       doc.save(nomeLista + ".pdf");
     });
-    document.getElementById('limparDados').addEventListener('click', () => {
+
+    document.getElementById('limparDados').addEventListener('click', function () {
       if (confirm('Tem certeza que deseja limpar todos os dados?')) {
         itens = [];
         salvarItens();
         atualizarTabela();
       }
     });
+
     window.onload = atualizarTabela;
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("Service Worker registrado com sucesso"))
-        .catch(err => console.error("Erro ao registrar o Service Worker", err));
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/Calculadora-de-Compras/service-worker.js')
+        .then(function () {
+          console.log("Service Worker registrado com sucesso");
+        })
+        .catch(function (err) {
+          console.error("Erro ao registrar o Service Worker", err);
+        });
     }
   </script>
 </body>
