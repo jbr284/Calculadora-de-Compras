@@ -49,9 +49,12 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">  }; // fim do window.onload
+</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js">  }; // fim do window.onload
+</script>
   <script>
+  window.onload = function () {
     let itens = JSON.parse(localStorage.getItem('itens')) || [];
 
     function salvarItens() {
@@ -130,6 +133,7 @@
           console.error("Erro ao registrar o Service Worker", err);
         });
     }
-  </script>
+    }; // fim do window.onload
+</script>
 </body>
 </html>
