@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculadora de Compras</title>
   <style>
     body {
@@ -36,22 +36,11 @@
       border-radius: 8px;
     }
 
-    #itemForm {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-    }
-
-    input, button {
+    input, button, select {
       padding: 10px;
       font-size: 14px;
       border-radius: 5px;
       border: 1px solid #ddd;
-      width: 100%;
-    }
-
-    input[type="number"], input[type="text"] {
       width: 100%;
     }
 
@@ -114,7 +103,7 @@
     }
 
     @media (max-width: 600px) {
-      input, button {
+      input, button, select {
         font-size: 16px;
       }
 
@@ -142,16 +131,18 @@
   <div id="app">
     <h1>Calculadora de Compras</h1>
 
-    <!-- Formulário para adicionar itens -->
     <div id="formulario">
       <input type="text" id="nomeLista" placeholder="Nome da Lista de Compras" />
       <input type="text" id="produto" placeholder="Produto" />
-      <input type="number" id="quantidade" placeholder="Quantidade" />
-      <input type="number" id="precoUnitario" placeholder="Preço Unitário" />
+      <input type="number" id="quantidade" placeholder="Quantidade" step="any" />
+      <input type="number" id="precoUnitario" placeholder="Preço Unitário" step="any" />
+      <select id="tipoPreco">
+        <option value="unidade">Preço por Unidade</option>
+        <option value="kg">Preço por Kg</option>
+      </select>
       <button id="adicionarItem">Adicionar Item</button>
     </div>
 
-    <!-- Tabela para exibir os itens adicionados -->
     <div id="itensLista">
       <table id="tabelaItens">
         <thead>
@@ -162,26 +153,20 @@
             <th>Total</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Itens serão exibidos aqui -->
-        </tbody>
+        <tbody></tbody>
       </table>
     </div>
 
-    <!-- Exibição do total geral -->
     <div id="totalCompra" class="totalCompra"></div>
 
-    <!-- Botões de Ações -->
     <div id="botoesAcoes">
       <button id="gerarPDF">Gerar PDF</button>
       <button id="limparDados">Limpar Dados</button>
     </div>
 
-    <!-- Mensagens de status -->
     <div id="messageContainer" class="message"></div>
   </div>
 
-  <!-- Bibliotecas jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
 
@@ -194,8 +179,9 @@
 
     document.getElementById('adicionarItem').addEventListener('click', () => {
       const produto = document.getElementById('produto').value;
-      const quantidade = parseInt(document.getElementById('quantidade').value);
+      const quantidade = parseFloat(document.getElementById('quantidade').value);
       const precoUnitario = parseFloat(document.getElementById('precoUnitario').value);
+      const tipoPreco = document.getElementById('tipoPreco').value;
 
       if (!produto || isNaN(quantidade) || isNaN(precoUnitario)) {
         alert("Por favor, preencha todos os campos corretamente.");
@@ -203,27 +189,39 @@
       }
 
       const total = precoUnitario * quantidade;
-      itens.push({ produto, quantidade, precoUnitario, total });
+      itens.push({ produto, quantidade, precoUnitario, total, tipoPreco });
 
       salvarItens();
 
       document.getElementById('produto').value = '';
       document.getElementById('quantidade').value = '';
       document.getElementById('precoUnitario').value = '';
+      document.getElementById('tipoPreco').value = 'unidade';
 
       atualizarTabela();
     });
+
+    function formatarQuantidade(item) {
+      if (item.tipoPreco === 'kg') {
+        return item.quantidade >= 1
+          ? `${item.quantidade} kg`
+          : `${item.quantidade * 1000} g`;
+      } else {
+        return `${item.quantidade} un.`;
+      }
+    }
 
     function atualizarTabela() {
       const tabela = document.getElementById('tabelaItens').getElementsByTagName('tbody')[0];
       tabela.innerHTML = '';
 
       itens.forEach(item => {
+        const quantidadeFormatada = formatarQuantidade(item);
         const row = tabela.insertRow();
         row.innerHTML = `
           <td>${item.produto}</td>
-          <td>${item.quantidade}</td>
-          <td>R$ ${item.precoUnitario.toFixed(2)}</td>
+          <td>${quantidadeFormatada}</td>
+          <td>R$ ${item.precoUnitario.toFixed(2)}${item.tipoPreco === 'kg' ? '/kg' : ''}</td>
           <td>R$ ${item.total.toFixed(2)}</td>
         `;
       });
@@ -240,7 +238,14 @@
 
       doc.autoTable({
         head: [['Produto', 'Quantidade', 'Preço Unitário', 'Total']],
-        body: itens.map(item => [item.produto, item.quantidade, item.precoUnitario.toFixed(2), item.total.toFixed(2)]),
+        body: itens.map(item => [
+          item.produto,
+          item.tipoPreco === 'kg'
+            ? (item.quantidade >= 1 ? `${item.quantidade} kg` : `${item.quantidade * 1000} g`)
+            : `${item.quantidade} un.`,
+          `R$ ${item.precoUnitario.toFixed(2)}${item.tipoPreco === 'kg' ? '/kg' : ''}`,
+          `R$ ${item.total.toFixed(2)}`
+        ]),
       });
 
       const totalCompra = itens.reduce((total, item) => total + item.total, 0);
