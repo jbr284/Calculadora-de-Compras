@@ -175,6 +175,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
 
   <script>
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/Calculadora-de-Compras/service-worker.js')
+    .then(reg => console.log("SW registrado:", reg))
+    .catch(err => console.error("Falha ao registrar SW:", err));
+}
+
     let itens = JSON.parse(localStorage.getItem('itens')) || [];
 
     function salvarItens() {
