@@ -1,6 +1,6 @@
 {
   "name": "Calculadora de Compras",
-  "short_name": "Calc. Compras",
+  "short_name": "Compras",
   "start_url": "/Calculadora-de-Compras/",
   "scope": "/Calculadora-de-Compras/",
   "display": "standalone",
