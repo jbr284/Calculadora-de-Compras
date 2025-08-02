@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora de Compras</title>
+  <title>Calculadora de Compras PWA</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#007bff">
+
   <style>
+    /* Estilos Gerais */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -26,22 +31,51 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
+    /* Estilos do Formulário */
     #formulario {
       display: flex;
       flex-direction: column;
       gap: 15px;
       align-items: center;
-      background-color: #b0b0b0;
+      background-color: #f7f7f7;
       padding: 20px;
       border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .campo-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .campo-form-inline {
+        display: flex;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .sub-campo {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    #formulario label {
+        font-size: 14px;
+        font-weight: bold;
+        text-align: left;
     }
 
     input, button, select {
       padding: 10px;
       font-size: 14px;
       border-radius: 5px;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       width: 100%;
+      box-sizing: border-box;
     }
 
     button {
@@ -49,12 +83,21 @@
       color: white;
       cursor: pointer;
       border: none;
+      font-weight: bold;
     }
 
     button:hover {
       background-color: #0056b3;
     }
+    
+    #limparDados {
+        background-color: #dc3545;
+    }
+    #limparDados:hover {
+        background-color: #c82333;
+    }
 
+    /* Estilos da Tabela e Total */
     #itensLista {
       display: flex;
       flex-direction: column;
@@ -65,15 +108,9 @@
     .totalCompra {
       font-size: 18px;
       font-weight: bold;
-      text-align: center;
+      text-align: right;
       margin-top: 20px;
-    }
-
-    .message {
-      color: green;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 20px;
+      padding-right: 10px;
     }
 
     table {
@@ -87,63 +124,111 @@
     }
 
     th, td {
-      padding: 10px;
+      padding: 12px;
       text-align: center;
     }
 
     th {
       background-color: #f2f2f2;
     }
+    
+    td:first-child {
+        text-align: left;
+    }
 
+    /* Outros Estilos */
     #botoesAcoes {
       display: flex;
       justify-content: center;
       gap: 15px;
       margin-top: 20px;
     }
+    
+    .message {
+      color: green;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+    }
 
+    /* Responsividade */
     @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
       input, button, select {
         font-size: 16px;
       }
-
       h1 {
         font-size: 24px;
       }
-
       #app {
         padding: 10px;
       }
-
       table th, table td {
+        padding: 8px;
         font-size: 12px;
       }
-
+      .campo-form-inline {
+        flex-direction: column;
+      }
       #botoesAcoes {
         flex-direction: column;
         align-items: center;
       }
     }
   </style>
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#007bff">
 </head>
 <body>
 
   <div id="app">
-    <h1>Calculadora de Compras</h1>
+    <h1>Calculadora de Compras PWA</h1>
 
-    <div id="formulario">
-      <input type="text" id="nomeLista" placeholder="Nome da Lista de Compras" />
-      <input type="text" id="produto" placeholder="Produto" />
-      <input type="number" id="quantidade" placeholder="Quantidade" step="any" />
-      <input type="number" id="precoUnitario" placeholder="Preço Unitário" step="any" />
-      <select id="tipoPreco">
-        <option value="unidade">Preço por Unidade</option>
-        <option value="kg">Preço por Kg</option>
-      </select>
-      <button id="adicionarItem">Adicionar Item</button>
-    </div>
+    <form id="formulario">
+      <div class="campo-form">
+        <label for="nomeLista">Nome da Lista:</label>
+        <input type="text" id="nomeLista" placeholder="Ex: Compras da Semana" />
+      </div>
+
+      <div class="campo-form">
+        <label for="produto">Produto:</label>
+        <input type="text" id="produto" placeholder="Ex: Queijo Minas" />
+      </div>
+
+      <div class="campo-form-inline">
+        <div class="sub-campo">
+          <label for="quantidade">Quantidade:</label>
+          <input type="number" id="quantidade" placeholder="Ex: 500" step="any" />
+        </div>
+        <div class="sub-campo">
+          <label for="unidadeCompra">Unidade:</label>
+          <select id="unidadeCompra">
+            <option value="un">Unidade (un)</option>
+            <option value="g">Grama (g)</option>
+            <option value="kg">Quilograma (kg)</option>
+            <option value="ml">Mililitro (ml)</option>
+            <option value="L">Litro (L)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="campo-form-inline">
+        <div class="sub-campo">
+          <label for="precoUnitario">Preço:</label>
+          <input type="number" id="precoUnitario" placeholder="Ex: 45.90" step="any" />
+        </div>
+        <div class="sub-campo">
+          <label for="unidadePreco">Por:</label>
+          <select id="unidadePreco">
+            <option value="un">Unidade (un)</option>
+            <option value="kg">Quilograma (kg)</option>
+            <option value="L">Litro (L)</option>
+          </select>
+        </div>
+      </div>
+      
+      <button type="button" id="adicionarItem">Adicionar Item</button>
+    </form>
 
     <div id="itensLista">
       <table id="tabelaItens">
@@ -151,7 +236,7 @@
           <tr>
             <th>Produto</th>
             <th>Quantidade</th>
-            <th>Preço Unitário</th>
+            <th>Preço Base</th>
             <th>Total</th>
           </tr>
         </thead>
@@ -173,111 +258,178 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
 
   <script>
+    // --- Elementos do DOM e Estado da Aplicação ---
+    const nomeListaInput = document.getElementById('nomeLista');
+    const produtoInput = document.getElementById('produto');
+    const quantidadeInput = document.getElementById('quantidade');
+    const unidadeCompraSelect = document.getElementById('unidadeCompra');
+    const precoUnitarioInput = document.getElementById('precoUnitario');
+    const unidadePrecoSelect = document.getElementById('unidadePreco');
+    const adicionarItemBtn = document.getElementById('adicionarItem');
+    const tabelaItensBody = document.getElementById('tabelaItens').getElementsByTagName('tbody')[0];
+    const totalCompraDiv = document.getElementById('totalCompra');
+    const gerarPDFBtn = document.getElementById('gerarPDF');
+    const limparDadosBtn = document.getElementById('limparDados');
+    const messageContainer = document.getElementById('messageContainer');
+
     let itens = JSON.parse(localStorage.getItem('itens')) || [];
-let nomeLista = localStorage.getItem('nomeLista') || '';
-    document.getElementById('nomeLista').value = nomeLista;
+    let nomeLista = localStorage.getItem('nomeLista') || '';
+    nomeListaInput.value = nomeLista;
 
-    document.getElementById('nomeLista').addEventListener('input', (e) => {
-      localStorage.setItem('nomeLista', e.target.value);
-    });
+    // --- Motor de Conversão de Unidades ---
+    const fatoresDeConversao = {
+      massa: { g: 1, kg: 1000 },
+      volume: { ml: 1, L: 1000 },
+      unidade: { un: 1 }
+    };
 
-    function salvarItens() {
-      localStorage.setItem('itens', JSON.stringify(itens));
+    function getUnitCategory(unit) {
+      if (fatoresDeConversao.massa[unit]) return 'massa';
+      if (fatoresDeConversao.volume[unit]) return 'volume';
+      if (fatoresDeConversao.unidade[unit]) return 'unidade';
+      return null;
     }
 
-    document.getElementById('adicionarItem').addEventListener('click', () => {
-      const produto = document.getElementById('produto').value;
-      const quantidade = parseFloat(document.getElementById('quantidade').value);
-      const precoUnitario = parseFloat(document.getElementById('precoUnitario').value);
-      const tipoPreco = document.getElementById('tipoPreco').value;
+    // --- Funções Principais ---
 
-      if (!produto || isNaN(quantidade) || isNaN(precoUnitario)) {
-        alert("Por favor, preencha todos os campos corretamente.");
-        return;
+    function calcularTotalItem(item) {
+      const categoria = getUnitCategory(item.unidadeComprada);
+      if (!categoria || categoria !== getUnitCategory(item.unidadePrecoBase)) {
+        return 0;
       }
 
-      const total = precoUnitario * quantidade;
-      itens.push({ produto, quantidade, precoUnitario, total, tipoPreco });
-
-      salvarItens();
-
-      document.getElementById('produto').value = '';
-      document.getElementById('quantidade').value = '';
-      document.getElementById('precoUnitario').value = '';
-      document.getElementById('tipoPreco').value = 'unidade';
-      document.getElementById('produto').focus();
-
-      atualizarTabela();
-    });
-
-    function formatarQuantidade(item) {
-      if (item.tipoPreco === 'kg') {
-        return item.quantidade >= 1
-          ? `${item.quantidade} kg`
-          : `${item.quantidade * 1000} g`;
-      } else {
-        return `${item.quantidade} un.`;
+      if (categoria === 'unidade') {
+        return item.quantidadeComprada * item.precoBase;
       }
+      
+      const fatores = fatoresDeConversao[categoria];
+      const quantidadeNaBase = item.quantidadeComprada * fatores[item.unidadeComprada];
+      const precoNaBase = item.precoBase / fatores[item.unidadePrecoBase];
+      
+      return quantidadeNaBase * precoNaBase;
+    }
+
+    function salvarDados() {
+      localStorage.setItem('itens', JSON.stringify(itens));
+      localStorage.setItem('nomeLista', nomeListaInput.value);
     }
 
     function atualizarTabela() {
-      const tabela = document.getElementById('tabelaItens').getElementsByTagName('tbody')[0];
-      tabela.innerHTML = '';
+      tabelaItensBody.innerHTML = '';
 
       itens.forEach(item => {
-        const quantidadeFormatada = formatarQuantidade(item);
-        const row = tabela.insertRow();
+        const row = tabelaItensBody.insertRow();
         row.innerHTML = `
           <td>${item.produto}</td>
-          <td>${quantidadeFormatada}</td>
-          <td>R$ ${item.precoUnitario.toFixed(2)}${item.tipoPreco === 'kg' ? '/kg' : ''}</td>
+          <td>${item.quantidadeComprada} ${item.unidadeComprada}</td>
+          <td>R$ ${item.precoBase.toFixed(2)} / ${item.unidadePrecoBase}</td>
           <td>R$ ${item.total.toFixed(2)}</td>
         `;
       });
 
-      const totalCompra = itens.reduce((total, item) => total + item.total, 0);
-      document.getElementById('totalCompra').textContent = `Total da Compra: R$ ${totalCompra.toFixed(2)}`;
+      const totalGeral = itens.reduce((total, item) => total + item.total, 0);
+      totalCompraDiv.textContent = `Total da Compra: R$ ${totalGeral.toFixed(2)}`;
     }
 
-    document.getElementById('gerarPDF').addEventListener('click', () => {
-      const nomeLista = localStorage.getItem("nomeLista") || "Lista_de_Compras";
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.text("Lista de Compras: " + nomeLista, 20, 20);
+    function limparFormulario() {
+      produtoInput.value = '';
+      quantidadeInput.value = '';
+      precoUnitarioInput.value = '';
+      unidadeCompraSelect.value = 'un';
+      unidadePrecoSelect.value = 'un';
+      produtoInput.focus();
+    }
 
-      doc.autoTable({
-        head: [['Produto', 'Quantidade', 'Preço Unitário', 'Total']],
-        body: itens.map(item => [
-          item.produto,
-          item.tipoPreco === 'kg'
-            ? (item.quantidade >= 1 ? `${item.quantidade} kg` : `${item.quantidade * 1000} g`)
-            : `${item.quantidade} un.`,
-          `R$ ${item.precoUnitario.toFixed(2)}${item.tipoPreco === 'kg' ? '/kg' : ''}`,
-          `R$ ${item.total.toFixed(2)}`
-        ]),
-      });
+    // --- Event Listeners ---
 
-      const totalCompra = itens.reduce((total, item) => total + item.total, 0);
-      doc.text(`Total: R$ ${totalCompra.toFixed(2)}`, 20, doc.lastAutoTable.finalY + 10);
-
-      doc.save(`${nomeLista}.pdf`);
+    nomeListaInput.addEventListener('input', () => {
+      salvarDados();
     });
 
-    document.getElementById('limparDados').addEventListener('click', () => {
-      const confirmacao = confirm('Tem certeza que deseja limpar todos os dados?');
+    adicionarItemBtn.addEventListener('click', () => {
+      const produto = produtoInput.value.trim();
+      const quantidadeComprada = parseFloat(quantidadeInput.value);
+      const unidadeComprada = unidadeCompraSelect.value;
+      const precoBase = parseFloat(precoUnitarioInput.value);
+      const unidadePrecoBase = unidadePrecoSelect.value;
+
+      if (!produto || isNaN(quantidadeComprada) || isNaN(precoBase)) {
+        alert("Por favor, preencha todos os campos corretamente.");
+        return;
+      }
+       if (quantidadeComprada <= 0 || precoBase < 0) {
+        alert("Quantidade e preço devem ser valores positivos.");
+        return;
+      }
+      const categoriaCompra = getUnitCategory(unidadeComprada);
+      const categoriaPreco = getUnitCategory(unidadePrecoBase);
+
+      if (categoriaCompra !== categoriaPreco) {
+        alert(`Erro de Unidade: Não é possível comprar em "${unidadeComprada}" um produto vendido por "${unidadePrecoBase}". As unidades devem ser da mesma categoria (massa, volume ou unidade).`);
+        return;
+      }
+
+      const item = {
+        produto,
+        quantidadeComprada,
+        unidadeComprada,
+        precoBase,
+        unidadePrecoBase
+      };
+      
+      item.total = calcularTotalItem(item);
+      
+      itens.push(item);
+      salvarDados();
+      atualizarTabela();
+      limparFormulario();
+    });
+
+    limparDadosBtn.addEventListener('click', () => {
+      const confirmacao = confirm('Tem certeza que deseja limpar todos os dados da lista?');
       if (confirmacao) {
         itens = [];
-        salvarItens();
+        nomeListaInput.value = '';
+        salvarDados();
         atualizarTabela();
       }
     });
 
-    window.onload = atualizarTabela;
-    if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log("✅ Service Worker registrado com sucesso"))
-      .catch(err => console.error("❌ Erro ao registrar o Service Worker:", err));
-  }
+    gerarPDFBtn.addEventListener('click', () => {
+      const nomeListaAtual = nomeListaInput.value || "Lista_de_Compras";
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      doc.text("Lista de Compras: " + nomeListaAtual, 20, 20);
+
+      doc.autoTable({
+        head: [['Produto', 'Quantidade', 'Preço Base', 'Total Item']],
+        body: itens.map(item => [
+          item.produto,
+          `${item.quantidadeComprada} ${item.unidadeComprada}`,
+          `R$ ${item.precoBase.toFixed(2)} / ${item.unidadePrecoBase}`,
+          `R$ ${item.total.toFixed(2)}`
+        ]),
+        startY: 30
+      });
+
+      const totalGeral = itens.reduce((total, item) => total + item.total, 0);
+      doc.text(`Total da Compra: R$ ${totalGeral.toFixed(2)}`, 20, doc.lastAutoTable.finalY + 10);
+
+      doc.save(`${nomeListaAtual.replace(/ /g, '_')}.pdf`);
+    });
+
+    // --- Inicialização ---
+    window.onload = () => {
+      atualizarTabela();
+
+      // Registro do Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log("✅ Service Worker registrado com sucesso"))
+          .catch(err => console.error("❌ Erro ao registrar o Service Worker:", err));
+      }
+    };
   </script>
 </body>
 </html>
