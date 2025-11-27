@@ -423,9 +423,12 @@
     window.onload = () => {
       atualizarTabela();
 
+// ... código anterior ...
+
       // Registro do Service Worker
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
+        // [CORREÇÃO] O nome do arquivo deve ser service-worker.js
+        navigator.serviceWorker.register('service-worker.js') 
           .then(() => console.log("✅ Service Worker registrado com sucesso"))
           .catch(err => console.error("❌ Erro ao registrar o Service Worker:", err));
       }
