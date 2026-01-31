@@ -1,6 +1,6 @@
 /* Reset Básico */
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-body { background-color: #f4f4f9; color: #333; padding-bottom: 70px; /* Espaço para nav bar */ }
+body { background-color: #f4f4f9; color: #333; padding-bottom: 70px; }
 
 /* Cabeçalho */
 header { background-color: #007bff; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -28,45 +28,56 @@ button:active { transform: scale(0.98); }
 .card-info span { font-size: 12px; color: #666; }
 .card-actions button { width: auto; padding: 5px 10px; margin: 0; font-size: 12px; background: #dc3545; }
 
-/* FAB (Botão Flutuante) */
+/* FAB */
 .fab { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; border-radius: 50%; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; }
 
 /* Menu da Calculadora */
 .calc-options { display: flex; flex-direction: column; gap: 15px; text-align: center; }
 .btn-option { padding: 20px; font-size: 18px; background: white; color: #007bff; border: 2px solid #007bff; }
 
-/* Interfaces de Calculadora */
+/* Interfaces */
 .display-total-geral { font-size: 32px; text-align: center; margin: 20px 0; font-weight: bold; color: #28a745; }
 .top-bar { display: flex; gap: 10px; margin-bottom: 10px; }
 .btn-back, .btn-back-small { background: #6c757d; width: auto; margin-bottom: 10px; }
 .total-bar { background: #333; color: white; padding: 15px; border-radius: 8px; text-align: right; font-size: 20px; margin: 10px 0; font-weight: bold; }
 
-/* Lista de Itens Detalhada (Estilo Base) */
-.item-compra { background: white; padding: 10px; margin-bottom: 5px; border-radius: 5px; border: 1px solid #eee; display: flex; justify-content: space-between; }
-.item-left { display: flex; flex-direction: column; }
-.item-nome { font-weight: bold; }
-.item-detalhe { font-size: 12px; color: #777; }
+/* Lista de Itens (Modo Leitura/Criar) */
+.item-compra { background: white; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #eee; display: flex; flex-direction: column; gap: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.item-top-row { display: flex; justify-content: space-between; align-items: center; }
+.item-nome { font-weight: bold; font-size: 16px; }
+.item-detalhe { font-size: 13px; color: #777; }
 .item-total { font-weight: bold; color: #007bff; }
 
-/* Navbar Inferior */
+/* === NOVO LAYOUT CHECKLIST (Modo Compra) === */
+.item-compra.item-ativo { border-left: 5px solid #ccc; transition: 0.3s; }
+.item-compra.item-confirmado { border-left: 5px solid #28a745; background-color: #f0fff4; }
+
+/* Linha 1: Nome e Marca Editável */
+.checklist-header { display: flex; gap: 10px; align-items: center; margin-bottom: 5px; }
+.input-marca-inline { border: none; border-bottom: 1px dashed #ccc; padding: 2px; width: 100%; font-size: 14px; color: #555; background: transparent; }
+
+/* Linha 2: Controles de Cálculo */
+.checklist-controls { display: grid; grid-template-columns: 1.2fr 1fr 0.2fr 1.2fr 1fr 0.8fr; gap: 5px; align-items: center; }
+
+/* Mobile Adjustment para Grid apertado */
+@media (max-width: 400px) {
+    .checklist-controls { grid-template-columns: 1fr 1fr; row-gap: 8px; }
+    .checklist-controls .separator { display: none; }
+    .btn-confirmar { grid-column: span 2; }
+}
+
+.input-compact { padding: 8px !important; margin: 0 !important; font-size: 14px; text-align: center; }
+.select-compact { padding: 8px 2px !important; margin: 0 !important; font-size: 13px; background-color: #f9f9f9; }
+.btn-confirmar { background: #28a745; color: white; border: none; border-radius: 5px; font-size: 18px; display: flex; align-items: center; justify-content: center; padding: 5px !important; margin: 0 !important; height: 38px; }
+.btn-confirmar.desfazer { background: #ffc107; color: #333; }
+
+/* Navbar Inferior e Modal */
 .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; height: 60px; z-index: 1000; }
 .nav-btn { background: transparent; color: #777; border-radius: 0; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; }
 .nav-btn.active { color: #007bff; border-top: 3px solid #007bff; }
 
-/* Modal */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; }
 .modal-content { background: white; padding: 20px; width: 90%; max-width: 400px; border-radius: 10px; max-height: 80vh; overflow-y: auto; }
 .item-importar { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
-.item-importar:hover { background: #f9f9f9; }
 
-/* Animações */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-/* === NOVOS ESTILOS: MODO CHECKLIST (Importar) === */
-.row-edit { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
-.input-qtd-lista { width: 70px !important; padding: 5px !important; margin: 0 !important; text-align: center; font-weight: bold; }
-.price-input-wrapper { display: flex; align-items: center; gap: 3px; background: #f8f9fa; padding: 5px; border-radius: 5px; border: 1px solid #ddd; }
-.input-preco-lista { width: 85px !important; padding: 5px !important; margin: 0 !important; border: none !important; background: transparent; font-weight: bold; color: #28a745; font-size: 16px; }
-.item-header { display: flex; align-items: center; gap: 10px; }
-.check-compra { width: 20px; height: 20px; margin: 0 !important; accent-color: #28a745; }
-.item-ativo { border-left: 4px solid #007bff; }
