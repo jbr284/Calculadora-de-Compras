@@ -41,7 +41,7 @@ button:active { transform: scale(0.98); }
 .btn-back, .btn-back-small { background: #6c757d; width: auto; margin-bottom: 10px; }
 .total-bar { background: #333; color: white; padding: 15px; border-radius: 8px; text-align: right; font-size: 20px; margin: 10px 0; font-weight: bold; }
 
-/* Lista de Itens Detalhada */
+/* Lista de Itens Detalhada (Estilo Base) */
 .item-compra { background: white; padding: 10px; margin-bottom: 5px; border-radius: 5px; border: 1px solid #eee; display: flex; justify-content: space-between; }
 .item-left { display: flex; flex-direction: column; }
 .item-nome { font-weight: bold; }
@@ -61,3 +61,12 @@ button:active { transform: scale(0.98); }
 
 /* Animações */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* === NOVOS ESTILOS: MODO CHECKLIST (Importar) === */
+.row-edit { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+.input-qtd-lista { width: 70px !important; padding: 5px !important; margin: 0 !important; text-align: center; font-weight: bold; }
+.price-input-wrapper { display: flex; align-items: center; gap: 3px; background: #f8f9fa; padding: 5px; border-radius: 5px; border: 1px solid #ddd; }
+.input-preco-lista { width: 85px !important; padding: 5px !important; margin: 0 !important; border: none !important; background: transparent; font-weight: bold; color: #28a745; font-size: 16px; }
+.item-header { display: flex; align-items: center; gap: 10px; }
+.check-compra { width: 20px; height: 20px; margin: 0 !important; accent-color: #28a745; }
+.item-ativo { border-left: 4px solid #007bff; }
