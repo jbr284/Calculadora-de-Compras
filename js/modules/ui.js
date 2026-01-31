@@ -1,9 +1,8 @@
 import { formatarMoeda } from './calculator.js';
 
-// Utilitário para selecionar elementos
 const $ = (selector) => document.querySelector(selector);
 
-// Renderiza os cards na tela inicial
+// Renderiza Cards na Home
 export function renderCardsListas(listas, onDeleteClick, onOpenClick) {
     const container = $('#lista-cards-container');
     container.innerHTML = '';
@@ -17,7 +16,6 @@ export function renderCardsListas(listas, onDeleteClick, onOpenClick) {
         const div = document.createElement('div');
         div.className = 'card-lista';
         
-        // Data formatada
         const data = new Date(lista.dataCriacao || Date.now()).toLocaleDateString('pt-BR');
 
         div.innerHTML = `
@@ -30,10 +28,8 @@ export function renderCardsListas(listas, onDeleteClick, onOpenClick) {
             </div>
         `;
 
-        // Evento de abrir (clique no texto)
         div.querySelector('.card-info').addEventListener('click', () => onOpenClick(lista));
         
-        // Evento de deletar
         div.querySelector('.btn-del').addEventListener('click', (e) => {
             e.stopPropagation();
             if(confirm(`Excluir a lista "${lista.nome}"?`)) onDeleteClick(lista.id);
@@ -43,35 +39,43 @@ export function renderCardsListas(listas, onDeleteClick, onOpenClick) {
     });
 }
 
-// Renderiza a lista de itens na calculadora detalhada
+// Renderiza Itens na Tabela (COM MARCA)
 export function renderItensCalculadora(itens, onDeleteItem) {
     const container = $('#lista-itens-detalhada');
+    if(!container) return;
+    
     container.innerHTML = '';
 
     itens.forEach((item, index) => {
         const div = document.createElement('div');
         div.className = 'item-compra';
+        
+        // Exibe Marca se existir
+        const textoProduto = item.marca 
+            ? `<strong>${item.produto}</strong> <small style="color:#666;">(${item.marca})</small>` 
+            : `<strong>${item.produto}</strong>`;
+
         div.innerHTML = `
             <div class="item-left">
-                <span class="item-nome">${item.produto}</span>
-                <span class="item-detalhe">${item.quantidade} ${item.unidade} x R$ ${formatarMoeda(item.preco)}</span>
+                <span class="item-nome">${textoProduto}</span>
+                <span class="item-detalhe">${item.quantidade} ${item.unidade} ${item.preco > 0 ? 'x R$ ' + formatarMoeda(item.preco) : ''}</span>
             </div>
             <div class="item-right">
                 <div class="item-total">R$ ${formatarMoeda(item.total)}</div>
             </div>
         `;
-        // Opção simples de deletar ao clicar (pode melhorar depois com botão específico)
+        
         div.addEventListener('click', () => {
-            if(confirm("Remover este item?")) onDeleteItem(index);
+            if(confirm(`Remover "${item.produto}"?`)) onDeleteItem(index);
         });
         container.appendChild(div);
     });
 }
 
-// Alterna abas
+// Utilitários de Navegação
 export function switchView(targetId) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden')); // Garante hidden
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden')); 
     
     const target = document.getElementById(targetId);
     if(target) {
@@ -79,15 +83,14 @@ export function switchView(targetId) {
         target.classList.add('active');
     }
 
-    // Atualiza nav bar
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.target === targetId);
     });
 }
 
-// Mostra mensagem toast
 export function showMessage(msg, type = 'success') {
     const el = $('#message-container');
+    if(!el) return;
     el.textContent = msg;
     el.className = `message ${type === 'error' ? 'msg-error' : 'msg-success'}`;
     el.classList.remove('hidden');
