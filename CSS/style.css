@@ -1,0 +1,63 @@
+/* Reset Básico */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+body { background-color: #f4f4f9; color: #333; padding-bottom: 70px; /* Espaço para nav bar */ }
+
+/* Cabeçalho */
+header { background-color: #007bff; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+/* Layout e Views */
+main { padding: 15px; max-width: 600px; margin: 0 auto; }
+.view { display: none; animation: fadeIn 0.3s ease; }
+.view.active { display: block; }
+.hidden { display: none !important; }
+
+/* Botões e Inputs Gerais */
+input, select, button { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+button { background-color: #007bff; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+button:active { transform: scale(0.98); }
+.btn-success { background-color: #28a745; }
+.btn-danger { background-color: #dc3545; }
+.row { display: flex; gap: 10px; }
+.row input { flex: 2; }
+.row select { flex: 1; }
+
+/* View Listas (Cards) */
+.cards-container { display: flex; flex-direction: column; gap: 10px; }
+.card-lista { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid #007bff; display: flex; justify-content: space-between; align-items: center; }
+.card-info h3 { font-size: 18px; margin-bottom: 5px; }
+.card-info span { font-size: 12px; color: #666; }
+.card-actions button { width: auto; padding: 5px 10px; margin: 0; font-size: 12px; background: #dc3545; }
+
+/* FAB (Botão Flutuante) */
+.fab { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; border-radius: 50%; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; }
+
+/* Menu da Calculadora */
+.calc-options { display: flex; flex-direction: column; gap: 15px; text-align: center; }
+.btn-option { padding: 20px; font-size: 18px; background: white; color: #007bff; border: 2px solid #007bff; }
+
+/* Interfaces de Calculadora */
+.display-total-geral { font-size: 32px; text-align: center; margin: 20px 0; font-weight: bold; color: #28a745; }
+.top-bar { display: flex; gap: 10px; margin-bottom: 10px; }
+.btn-back, .btn-back-small { background: #6c757d; width: auto; margin-bottom: 10px; }
+.total-bar { background: #333; color: white; padding: 15px; border-radius: 8px; text-align: right; font-size: 20px; margin: 10px 0; font-weight: bold; }
+
+/* Lista de Itens Detalhada */
+.item-compra { background: white; padding: 10px; margin-bottom: 5px; border-radius: 5px; border: 1px solid #eee; display: flex; justify-content: space-between; }
+.item-left { display: flex; flex-direction: column; }
+.item-nome { font-weight: bold; }
+.item-detalhe { font-size: 12px; color: #777; }
+.item-total { font-weight: bold; color: #007bff; }
+
+/* Navbar Inferior */
+.bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; height: 60px; z-index: 1000; }
+.nav-btn { background: transparent; color: #777; border-radius: 0; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; }
+.nav-btn.active { color: #007bff; border-top: 3px solid #007bff; }
+
+/* Modal */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.modal-content { background: white; padding: 20px; width: 90%; max-width: 400px; border-radius: 10px; max-height: 80vh; overflow-y: auto; }
+.item-importar { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
+.item-importar:hover { background: #f9f9f9; }
+
+/* Animações */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
