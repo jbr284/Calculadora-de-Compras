@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Compras PWA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+</head>
+<body>
+
+    <header>
+        <h1>Gestor de Compras</h1>
+    </header>
+
+    <main id="app">
+        <div id="message-container" class="message hidden"></div>
+
+        <section id="view-listas" class="view active">
+            <h2>Minhas Listas Salvas</h2>
+            <div id="lista-cards-container" class="cards-container">
+                <p class="empty-msg">Nenhuma lista salva.</p>
+            </div>
+            <button id="btn-nova-lista-rapida" class="fab">+</button>
+        </section>
+
+        <section id="view-calculadora" class="view hidden">
+            
+            <div id="calc-menu" class="calc-options">
+                <h3>Escolha o Modo</h3>
+                <button class="btn-option" data-mode="geral">🔢 Calculadora Geral</button>
+                <button class="btn-option" data-mode="criar">📝 Calcular e Gerar Lista</button>
+                <button class="btn-option" data-mode="importar">📂 Importar Lista Salva</button>
+            </div>
+
+            <div id="interface-geral" class="calc-interface hidden">
+                <div class="display-total-geral">
+                    R$ <span id="valor-total-geral">0.00</span>
+                </div>
+                <div class="form-geral">
+                    <input type="number" id="input-valor-geral" placeholder="Valor (R$)" step="0.01">
+                    <button id="btn-somar-geral">SOMAR (+)</button>
+                </div>
+                <ul id="historico-geral"></ul>
+                <button class="btn-back">Voltar</button>
+            </div>
+
+            <div id="interface-detalhada" class="calc-interface hidden">
+                <div class="top-bar">
+                    <button class="btn-back-small">← Voltar</button>
+                    <input type="text" id="nome-lista-ativa" placeholder="Nome da Lista (Opcional)">
+                </div>
+
+                <form id="form-item">
+                    <input type="text" id="produto" placeholder="Produto (Ex: Arroz)">
+                    <div class="row">
+                        <input type="number" id="quantidade" placeholder="Qtd" step="any">
+                        <select id="unidade-compra">
+                            <option value="un">un</option>
+                            <option value="kg">kg</option>
+                            <option value="g">g</option>
+                            <option value="L">L</option>
+                            <option value="ml">ml</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <input type="number" id="preco" placeholder="Preço (R$)" step="any">
+                        <select id="unidade-preco">
+                            <option value="un">/ un</option>
+                            <option value="kg">/ kg</option>
+                            <option value="L">/ L</option>
+                        </select>
+                    </div>
+                    <button type="button" id="btn-add-item">Adicionar / Atualizar</button>
+                </form>
+
+                <div class="total-bar">
+                    Total: R$ <span id="total-detalhado">0.00</span>
+                </div>
+
+                <div id="lista-itens-detalhada">
+                    </div>
+
+                <div class="actions-bar">
+                    <button id="btn-salvar-lista" class="btn-success">Salvar Lista</button>
+                    <button id="btn-limpar-lista" class="btn-danger">Limpar</button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn active" data-target="view-listas">
+            📋 Listas
+        </button>
+        <button class="nav-btn" data-target="view-calculadora">
+            🧮 Calculadora
+        </button>
+    </nav>
+
+    <div id="modal-importar" class="modal hidden">
+        <div class="modal-content">
+            <h3>Selecione uma Lista</h3>
+            <div id="lista-importar-container"></div>
+            <button id="btn-fechar-modal">Cancelar</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+    
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
