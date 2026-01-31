@@ -24,7 +24,6 @@ function init() {
     carregarMinhasListas();
     setupEventListeners();
     
-    // Registra Service Worker se disponível
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./service-worker.js')
             .then(() => console.log("Service Worker registrado."))
@@ -35,14 +34,14 @@ function init() {
 function carregarMinhasListas() {
     const listas = Storage.getListas();
     UI.renderCardsListas(listas, 
-        (id) => { Storage.deleteLista(id); carregarMinhasListas(); }, // Callback Deletar
-        (lista) => { importarListaParaCalculadora(lista); } // Callback Abrir
+        (id) => { Storage.deleteLista(id); carregarMinhasListas(); }, // Delete Callback
+        (lista) => { importarListaParaCalculadora(lista); } // Open Callback
     );
 }
 
 // --- LÓGICA DE EVENTOS ---
 function setupEventListeners() {
-    // Navegação Principal (Abas Rodapé)
+    // Navegação Principal
     navBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             const target = btn.dataset.target;
@@ -52,7 +51,7 @@ function setupEventListeners() {
         });
     });
 
-    // Menu da Calculadora (Botões de Opção)
+    // Menu da Calculadora
     document.querySelectorAll('.btn-option').forEach(btn => {
         btn.addEventListener('click', () => {
             const modo = btn.dataset.mode;
@@ -60,12 +59,12 @@ function setupEventListeners() {
         });
     });
 
-    // Botões de Voltar (Setas)
+    // Botões de Voltar
     document.querySelectorAll('.btn-back, .btn-back-small').forEach(btn => {
         btn.addEventListener('click', resetCalculadoraView);
     });
 
-    // --- LÓGICA CALCULADORA GERAL (Opção 1) ---
+    // --- CALCULADORA GERAL ---
     const btnSomarGeral = document.getElementById('btn-somar-geral');
     if (btnSomarGeral) {
         btnSomarGeral.addEventListener('click', () => {
@@ -75,7 +74,6 @@ function setupEventListeners() {
                 estadoAtual.totalGeralSimples += valor;
                 document.getElementById('valor-total-geral').textContent = Calc.formatarMoeda(estadoAtual.totalGeralSimples);
                 
-                // Adiciona ao histórico visual
                 const li = document.createElement('li');
                 li.textContent = `+ R$ ${Calc.formatarMoeda(valor)}`;
                 const listaHist = document.getElementById('historico-geral');
@@ -87,7 +85,7 @@ function setupEventListeners() {
         });
     }
 
-    // --- LÓGICA CALCULADORA DETALHADA (Opção 2 e 3) ---
+    // --- CALCULADORA DETALHADA ---
     const btnAddItem = document.getElementById('btn-add-item');
     if (btnAddItem) {
         btnAddItem.addEventListener('click', adicionarItemDetalhado);
@@ -97,7 +95,7 @@ function setupEventListeners() {
     if (btnSalvarLista) {
         btnSalvarLista.addEventListener('click', () => {
             if (estadoAtual.listaAtiva.itens.length === 0) {
-                alert("A lista está vazia. Adicione itens antes de salvar.");
+                alert("A lista está vazia.");
                 return;
             }
             
@@ -111,7 +109,6 @@ function setupEventListeners() {
             Storage.saveLista(estadoAtual.listaAtiva);
             UI.showMessage("Lista salva com sucesso!");
             
-            // Volta para home e recarrega
             UI.switchView('view-listas');
             carregarMinhasListas();
         });
@@ -120,14 +117,13 @@ function setupEventListeners() {
     const btnLimparLista = document.getElementById('btn-limpar-lista');
     if (btnLimparLista) {
         btnLimparLista.addEventListener('click', () => {
-            if(confirm("Tem certeza que deseja limpar todos os itens da tela?")) {
+            if(confirm("Limpar toda a lista atual?")) {
                 estadoAtual.listaAtiva.itens = [];
                 atualizarUIListaDetalhada();
             }
         });
     }
 
-    // Botão Flutuante (FAB) na Home
     const fab = document.getElementById('btn-nova-lista-rapida');
     if (fab) {
         fab.addEventListener('click', () => {
@@ -136,7 +132,6 @@ function setupEventListeners() {
         });
     }
 
-    // Modal Importar - Fechar
     const btnFecharModal = document.getElementById('btn-fechar-modal');
     if (btnFecharModal) {
         btnFecharModal.addEventListener('click', () => {
@@ -146,7 +141,7 @@ function setupEventListeners() {
     }
 }
 
-// --- FUNÇÕES DE CONTROLE E LÓGICA ---
+// --- FUNÇÕES DE CONTROLE ---
 
 function resetCalculadoraView() {
     if(menuCalc) menuCalc.classList.remove('hidden');
@@ -162,25 +157,19 @@ function iniciarModoCalculadora(modo) {
     if (modo === 'geral') {
         if(interfaceGeral) interfaceGeral.classList.remove('hidden');
         estadoAtual.totalGeralSimples = 0;
-        
         const displayGeral = document.getElementById('valor-total-geral');
         if(displayGeral) displayGeral.textContent = '0.00';
-        
         const histGeral = document.getElementById('historico-geral');
         if(histGeral) histGeral.innerHTML = '';
-        
         const inputGeral = document.getElementById('input-valor-geral');
         if(inputGeral) inputGeral.focus();
 
     } 
     else if (modo === 'criar') {
         if(interfaceDetalhada) interfaceDetalhada.classList.remove('hidden');
-        // Reseta lista atual para uma nova limpa
         estadoAtual.listaAtiva = { id: null, nome: '', itens: [] };
-        
         const inputNome = document.getElementById('nome-lista-ativa');
         if(inputNome) inputNome.value = '';
-        
         atualizarUIListaDetalhada();
     }
     else if (modo === 'importar') {
@@ -198,7 +187,7 @@ function abrirModalImportar() {
     container.innerHTML = '';
     
     if (listas.length === 0) {
-        container.innerHTML = '<p style="text-align:center; padding:10px;">Nenhuma lista salva para importar.</p>';
+        container.innerHTML = '<p style="text-align:center;">Nenhuma lista salva.</p>';
     } else {
         listas.forEach(lista => {
             const div = document.createElement('div');
@@ -216,12 +205,10 @@ function abrirModalImportar() {
 }
 
 function importarListaParaCalculadora(lista) {
-    // Muda para a tab calculadora se não estiver
     UI.switchView('view-calculadora');
     if(menuCalc) menuCalc.classList.add('hidden');
     if(interfaceDetalhada) interfaceDetalhada.classList.remove('hidden');
 
-    // Clona a lista profundamente para não editar a original do banco diretamente até clicar em salvar
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
     
     const inputNome = document.getElementById('nome-lista-ativa');
@@ -232,70 +219,71 @@ function importarListaParaCalculadora(lista) {
 
 function adicionarItemDetalhado() {
     const produtoInput = document.getElementById('produto');
+    const marcaInput = document.getElementById('marca'); // Captura Marca
     const qtdInput = document.getElementById('quantidade');
     const unCompraInput = document.getElementById('unidade-compra');
     const precoInput = document.getElementById('preco');
     const unPrecoInput = document.getElementById('unidade-preco');
 
     const produto = produtoInput.value;
+    const marca = marcaInput.value;
     const qtd = parseFloat(qtdInput.value);
     const unCompra = unCompraInput.value;
-    
-    // --- LÓGICA DE PREÇO OPCIONAL ---
-    // Se o preço for vazio ou inválido, assumimos 0
-    let preco = parseFloat(precoInput.value);
-    if (isNaN(preco)) {
-        preco = 0;
-    }
-    
     const unPreco = unPrecoInput.value;
+    
+    // Tratamento Preço Opcional
+    let preco = parseFloat(precoInput.value);
+    let total = 0;
 
-    // Validação: Apenas Produto e Quantidade são obrigatórios agora
     if (!produto || isNaN(qtd)) {
-        alert("Por favor, preencha pelo menos o Nome do Produto e a Quantidade.");
+        alert("Preencha pelo menos o Nome do Produto e a Quantidade.");
         return;
     }
 
-    try {
-        // Se o preço for 0, o total será 0. Isso é aceitável para listas de planejamento.
-        const total = Calc.calcularTotalItem(qtd, unCompra, preco, unPreco);
-        
-        const item = {
-            produto,
-            quantidade: qtd,
-            unidade: unCompra,
-            preco,
-            unidadePreco: unPreco,
-            total
-        };
-
-        estadoAtual.listaAtiva.itens.push(item);
-        atualizarUIListaDetalhada();
-        
-        // Limpar campos
-        produtoInput.value = '';
-        qtdInput.value = '';
-        precoInput.value = ''; // Limpa o preço visualmente
-        produtoInput.focus(); // Foca no produto para digitar o próximo rapidamente
-
-    } catch (e) {
-        alert("Erro ao calcular: " + e.message);
+    // Se não tem preço ou é zero, ignoramos validação de unidade
+    if (isNaN(preco) || preco === 0) {
+        preco = 0;
+        total = 0;
+    } else {
+        try {
+            total = Calc.calcularTotalItem(qtd, unCompra, preco, unPreco);
+        } catch (e) {
+            alert("Erro de Unidade: " + e.message);
+            return;
+        }
     }
+
+    const item = {
+        produto,
+        marca,
+        quantidade: qtd,
+        unidade: unCompra,
+        preco,
+        unidadePreco: unPreco,
+        total
+    };
+
+    estadoAtual.listaAtiva.itens.push(item);
+    atualizarUIListaDetalhada();
+    
+    // Limpar campos
+    produtoInput.value = '';
+    marcaInput.value = '';
+    qtdInput.value = '';
+    precoInput.value = '';
+    produtoInput.focus();
 }
 
 function atualizarUIListaDetalhada() {
-    // Renderiza a lista visual
     UI.renderItensCalculadora(estadoAtual.listaAtiva.itens, (index) => {
-        // Callback para deletar item individual
         estadoAtual.listaAtiva.itens.splice(index, 1);
         atualizarUIListaDetalhada();
     });
 
-    // Atualiza o Total da Lista
     const total = estadoAtual.listaAtiva.itens.reduce((acc, item) => acc + item.total, 0);
     const totalEl = document.getElementById('total-detalhado');
     if(totalEl) totalEl.textContent = Calc.formatarMoeda(total);
 }
 
-// Inicia o App
+// Inicia
 init();
