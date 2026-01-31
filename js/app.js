@@ -2,11 +2,10 @@ import * as Calc from './modules/calculator.js';
 import * as Storage from './modules/storage.js';
 import * as UI from './modules/ui.js';
 
-// --- ESTADO ---
 let estadoAtual = {
     modo: null, 
     listaAtiva: { id: null, nome: '', itens: [] },
-    totalGeralSimples: 0
+    calcExpressao: '' // Para a calculadora geral
 };
 
 // --- ELEMENTOS ---
@@ -15,7 +14,7 @@ const menuCalc = document.getElementById('calc-menu');
 const interfaceGeral = document.getElementById('interface-geral');
 const interfaceDetalhada = document.getElementById('interface-detalhada');
 const formItem = document.getElementById('form-item');
-const btnLimparLista = document.getElementById('btn-limpar-lista'); // Capturado aqui
+const btnLimparLista = document.getElementById('btn-limpar-lista');
 
 function init() {
     carregarMinhasListas();
@@ -25,9 +24,11 @@ function init() {
 
 function carregarMinhasListas() {
     const listas = Storage.getListas();
+    // Agora passamos 3 callbacks: Deletar, Editar, Usar(Comprar)
     UI.renderCardsListas(listas, 
-        (id) => { Storage.deleteLista(id); carregarMinhasListas(); }, 
-        (lista) => { importarListaParaCalculadora(lista); }
+        (id) => { Storage.deleteLista(id); carregarMinhasListas(); }, // Delete
+        (lista) => { editarLista(lista); }, // Editar
+        (lista) => { importarListaParaCalculadora(lista); } // Usar/Comprar
     );
 }
 
@@ -43,13 +44,14 @@ function setupEventListeners() {
         btn.addEventListener('click', () => iniciarModoCalculadora(btn.dataset.mode));
     });
 
-    document.querySelectorAll('.btn-back, .btn-back-small').forEach(btn => {
-        btn.addEventListener('click', resetCalculadoraView);
+    // Event Delegation para o botão voltar da calculadora geral que é gerado dinamicamente
+    document.body.addEventListener('click', (e) => {
+        if(e.target.classList.contains('btn-back') || e.target.classList.contains('btn-back-small')) {
+            resetCalculadoraView();
+        }
     });
 
-    const btnSomar = document.getElementById('btn-somar-geral');
-    if(btnSomar) btnSomar.addEventListener('click', somarGeral);
-
+    // --- Eventos da Calculadora Detalhada ---
     const btnAdd = document.getElementById('btn-add-item');
     if(btnAdd) btnAdd.addEventListener('click', adicionarItemDetalhado);
     
@@ -70,7 +72,59 @@ function setupEventListeners() {
     document.getElementById('btn-fechar-modal').addEventListener('click', () => document.getElementById('modal-importar').classList.add('hidden'));
 }
 
-// --- CONTROLLERS ---
+// --- LÓGICA DA CALCULADORA GERAL (NOVA) ---
+function iniciarCalculadoraGeral() {
+    UI.renderCalculadoraGeral(); // Desenha o HTML
+    estadoAtual.calcExpressao = '';
+    const visor = document.getElementById('visor-calc');
+
+    // Adiciona eventos aos botões da calc
+    const botoes = document.querySelectorAll('.btn-calc');
+    botoes.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const valor = btn.innerText;
+            
+            if (btn.classList.contains('clear')) {
+                estadoAtual.calcExpressao = '';
+                visor.innerText = '0';
+            } 
+            else if (btn.classList.contains('del-char')) {
+                estadoAtual.calcExpressao = estadoAtual.calcExpressao.slice(0, -1);
+                visor.innerText = estadoAtual.calcExpressao || '0';
+            }
+            else if (btn.classList.contains('igual')) {
+                try {
+                    // Substitui x por * e ÷ por / para cálculo
+                    let expressaoReal = estadoAtual.calcExpressao.replace(/×/g, '*').replace(/÷/g, '/');
+                    const resultado = eval(expressaoReal); // Eval é seguro aqui pois o input é controlado por botões
+                    visor.innerText = Number.isInteger(resultado) ? resultado : resultado.toFixed(2);
+                    estadoAtual.calcExpressao = visor.innerText;
+                } catch (e) {
+                    visor.innerText = 'Erro';
+                    estadoAtual.calcExpressao = '';
+                }
+            } 
+            else if (btn.classList.contains('op')) {
+                const op = btn.dataset.op; // /, *, -, +
+                const ultimoChar = estadoAtual.calcExpressao.slice(-1);
+                // Evita operadores duplicados
+                if (['/','*','-','+'].includes(ultimoChar)) {
+                    estadoAtual.calcExpressao = estadoAtual.calcExpressao.slice(0, -1) + op;
+                } else {
+                    estadoAtual.calcExpressao += op;
+                }
+                visor.innerText = estadoAtual.calcExpressao;
+            } 
+            else {
+                // Números e Ponto
+                estadoAtual.calcExpressao += valor;
+                visor.innerText = estadoAtual.calcExpressao;
+            }
+        });
+    });
+}
+
+// --- FLUXOS DE NAVEGAÇÃO ---
 
 function resetCalculadoraView() {
     menuCalc.classList.remove('hidden');
@@ -85,17 +139,14 @@ function iniciarModoCalculadora(modo) {
 
     if (modo === 'geral') {
         interfaceGeral.classList.remove('hidden');
-        estadoAtual.totalGeralSimples = 0;
-        document.getElementById('valor-total-geral').textContent = '0.00';
-        document.getElementById('historico-geral').innerHTML = '';
+        iniciarCalculadoraGeral(); // Inicia lógica da calc geral
         
     } else if (modo === 'criar') {
         interfaceDetalhada.classList.remove('hidden');
         if(formItem) formItem.classList.remove('hidden');
-        
-        // MOSTRA o botão limpar no modo criar
         if(btnLimparLista) btnLimparLista.classList.remove('hidden');
 
+        // Cria nova lista limpa (sem ID)
         estadoAtual.listaAtiva = { id: null, nome: '', itens: [] };
         document.getElementById('nome-lista-ativa').value = '';
         atualizarUIListaDetalhada();
@@ -105,6 +156,25 @@ function iniciarModoCalculadora(modo) {
     }
 }
 
+// --- MODO EDITAR LISTA (NOVO) ---
+function editarLista(lista) {
+    UI.switchView('view-calculadora');
+    menuCalc.classList.add('hidden');
+    interfaceDetalhada.classList.remove('hidden');
+    
+    // Configuração igual ao modo CRIAR (Form visível)
+    if(formItem) formItem.classList.remove('hidden');
+    if(btnLimparLista) btnLimparLista.classList.remove('hidden');
+
+    estadoAtual.modo = 'criar'; // Usa a lógica de criar (com form)
+    // Mas carrega os dados da lista existente, INCLUINDO O ID
+    estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
+    
+    document.getElementById('nome-lista-ativa').value = lista.nome;
+    atualizarUIListaDetalhada();
+}
+
+// --- MODO COMPRAR/IMPORTAR (CHECKLIST) ---
 function abrirModalImportar() {
     const modal = document.getElementById('modal-importar');
     const container = document.getElementById('lista-importar-container');
@@ -132,18 +202,16 @@ function importarListaParaCalculadora(lista) {
     menuCalc.classList.add('hidden');
     interfaceDetalhada.classList.remove('hidden');
     
-    // ESCONDE form e botão limpar
     if(formItem) formItem.classList.add('hidden'); 
     if(btnLimparLista) btnLimparLista.classList.add('hidden');
 
     estadoAtual.modo = 'importar'; 
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
     
-    // Zera os totais anteriores para começar a compra limpa, mas mantém quantidades
-    // Opcional: Se quiser manter o histórico de preços antigo, remova este map.
+    // Zera preços para checklist limpo
     estadoAtual.listaAtiva.itens = estadoAtual.listaAtiva.itens.map(i => ({
         ...i,
-        preco: 0, // Zera preço para forçar preenchimento na loja
+        preco: 0,
         total: 0,
         confirmado: false
     }));
@@ -151,6 +219,8 @@ function importarListaParaCalculadora(lista) {
     document.getElementById('nome-lista-ativa').value = lista.nome;
     atualizarUIListaDetalhada();
 }
+
+// --- LÓGICA DE ITENS E SALVAMENTO (Mantém quase igual) ---
 
 function adicionarItemDetalhado() {
     const produto = document.getElementById('produto').value;
@@ -164,8 +234,6 @@ function adicionarItemDetalhado() {
     
     let total = 0;
     if (isNaN(preco)) preco = 0;
-    
-    // No modo criar, não validamos unidade rigidamente se preço for 0
     if (preco > 0) {
         try { total = Calc.calcularTotalItem(qtd, unCompra, preco, unPreco); } 
         catch(e) { return alert(e.message); }
@@ -175,11 +243,11 @@ function adicionarItemDetalhado() {
         produto, marca, quantidade: qtd, unidade: unCompra, preco, unidadePreco: unPreco, total, confirmado: false 
     });
     
-    // Limpa form
     document.getElementById('produto').value = '';
     document.getElementById('marca').value = '';
     document.getElementById('quantidade').value = '';
     document.getElementById('preco').value = '';
+    document.getElementById('produto').focus();
     
     atualizarUIListaDetalhada();
 }
@@ -189,73 +257,46 @@ function atualizarUIListaDetalhada() {
 
     UI.renderItensCalculadora(
         estadoAtual.listaAtiva.itens, 
-        // Callback Delete (Criar)
+        // Callback Delete
         (index) => {
             estadoAtual.listaAtiva.itens.splice(index, 1);
             atualizarUIListaDetalhada();
         },
-        // Callback Confirmar (Importar)
+        // Callback Confirmar
         (index, dadosNovos) => {
             const item = estadoAtual.listaAtiva.itens[index];
-            
-            // Se já estava confirmado, o clique serve para desfazer/editar
             if (item.confirmado) {
                 item.confirmado = false;
                 item.total = 0;
-                atualizarUIListaDetalhada(); // Redesenha para destravar edição se quisesse travar
+                atualizarUIListaDetalhada();
                 atualizarTotalGeralNaTela();
                 return;
             }
-
-            // Atualiza dados
             item.marca = dadosNovos.marca;
             item.quantidade = dadosNovos.quantidade;
             item.unidade = dadosNovos.unidade;
             item.preco = dadosNovos.preco;
             item.unidadePreco = dadosNovos.unidadePreco;
 
-            if (isNaN(item.preco) || item.preco <= 0) {
-                alert("Insira um preço válido para confirmar.");
-                return;
-            }
+            if (isNaN(item.preco) || item.preco <= 0) return alert("Insira um preço válido.");
 
             try {
-                // AQUI O APP CONVERTE (Ex: 700g com preço em kg)
                 item.total = Calc.calcularTotalItem(item.quantidade, item.unidade, item.preco, item.unidadePreco);
                 item.confirmado = true;
-                
-                // Salva automaticamente o progresso no localStorage se quiser
-                // Storage.saveLista(estadoAtual.listaAtiva); 
-
                 atualizarUIListaDetalhada();
             } catch (e) {
-                alert("Erro de conversão: " + e.message + "\nVerifique se as unidades são compatíveis (Ex: Massa com Massa).");
+                alert("Erro: " + e.message);
             }
         },
         isModoImportar
     );
-
     atualizarTotalGeralNaTela();
 }
 
 function atualizarTotalGeralNaTela() {
-    // Soma apenas itens confirmados ou com total calculado
     const total = estadoAtual.listaAtiva.itens.reduce((acc, item) => acc + (item.total || 0), 0);
     const totalEl = document.getElementById('total-detalhado');
     if(totalEl) totalEl.textContent = Calc.formatarMoeda(total);
-}
-
-function somarGeral() {
-    const input = document.getElementById('input-valor-geral');
-    const valor = parseFloat(input.value);
-    if (!isNaN(valor) && valor > 0) {
-        estadoAtual.totalGeralSimples += valor;
-        document.getElementById('valor-total-geral').textContent = Calc.formatarMoeda(estadoAtual.totalGeralSimples);
-        const li = document.createElement('li');
-        li.textContent = `+ R$ ${Calc.formatarMoeda(valor)}`;
-        document.getElementById('historico-geral').prepend(li);
-        input.value = '';
-    }
 }
 
 function salvarListaAtual() {
@@ -263,6 +304,8 @@ function salvarListaAtual() {
     let nome = document.getElementById('nome-lista-ativa').value;
     if (!nome || !nome.trim()) nome = `Lista ${new Date().toLocaleDateString()}`;
     estadoAtual.listaAtiva.nome = nome;
+    
+    // O Storage.saveLista já lida com Update se o ID existir
     Storage.saveLista(estadoAtual.listaAtiva);
     UI.showMessage("Lista salva!");
     UI.switchView('view-listas');
