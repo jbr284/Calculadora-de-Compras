@@ -11,8 +11,9 @@
 body {
     background-color: #f4f4f9;
     color: #333;
-    /* Aumentei o padding inferior para garantir que os botões flutuantes não cubram o conteúdo */
-    padding-bottom: 90px; 
+    padding-bottom: 80px; /* Espaço para a barra de navegação inferior */
+    height: 100vh; /* Garante altura total para fixação */
+    overflow-y: auto; /* Scroll normal nas outras telas */
 }
 
 /* =========================================
@@ -41,6 +42,7 @@ main {
     padding: 15px;
     max-width: 600px;
     margin: 0 auto;
+    height: calc(100vh - 60px); /* Altura total menos header */
 }
 
 .view {
@@ -50,6 +52,14 @@ main {
 
 .view.active {
     display: block;
+}
+
+/* AJUSTE PARA CALCULADORA GERAL FIXA */
+#interface-geral {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 160px); /* Altura exata da tela menos Header, Nav e Paddings */
+    overflow: hidden; /* Impede que a tela inteira role */
 }
 
 .hidden {
@@ -119,6 +129,7 @@ button:active {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    padding-bottom: 20px; /* Espaço extra no final da lista */
 }
 
 .card-lista {
@@ -193,7 +204,7 @@ button:active {
 /* FAB - Botão Flutuante */
 .fab {
     position: fixed;
-    bottom: 90px; /* Ajustado para ficar acima da nova navbar */
+    bottom: 90px;
     right: 20px;
     width: 60px;
     height: 60px;
@@ -209,17 +220,25 @@ button:active {
 }
 
 /* =========================================
-   6. NOVA CALCULADORA GERAL (ESTILO FITA)
+   6. NOVA CALCULADORA GERAL (ESTILO FIXO)
    ========================================= */
 
+/* Área Superior Fixa (Botão Voltar) */
+.top-bar-fixed {
+    flex-shrink: 0; /* Não encolhe */
+}
+
+/* Total Fixo no Topo */
 .calc-total-box {
     background: #333;
     color: #fff;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    flex-shrink: 0; /* Garante que o total nunca suma ou encolha */
+    z-index: 10;
 }
 
 .calc-total-label {
@@ -236,14 +255,16 @@ button:active {
     font-family: monospace;
 }
 
+/* Lista Rolável (Fita) */
 .tape-container {
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
-    height: 250px;
-    overflow-y: auto;
+    /* REMOVIDO height fixa */
+    flex-grow: 1; /* Ocupa todo o espaço disponível no meio */
+    overflow-y: auto; /* Permite rolagem apenas aqui */
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
 }
 
@@ -251,7 +272,7 @@ button:active {
     list-style: none;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-end; /* Itens começam de baixo */
     min-height: 100%;
 }
 
@@ -274,6 +295,14 @@ button:active {
     color: #007bff;
     font-weight: bold;
     margin-right: 10px;
+}
+
+/* Controles Fixos na Base */
+.calc-controls-area {
+    flex-shrink: 0; /* Não encolhe */
+    background-color: #f4f4f9; /* Garante que o fundo tape a lista se passar por baixo */
+    padding-top: 5px;
+    z-index: 10;
 }
 
 .calc-input-row {
@@ -313,15 +342,13 @@ button:active {
 /* =========================================
    7. LISTA DE ITENS (CRIAR E CHECKLIST)
    ========================================= */
-/* Container para scroll horizontal */
 #lista-itens-detalhada {
     width: 100%;
     overflow-x: auto; 
     border-radius: 8px;
-    padding-bottom: 5px; /* Espaço pro scrollbar */
+    padding-bottom: 5px;
 }
 
-/* Configuração do Grid (Tabela) */
 .tabela-header, .item-tabela {
     display: grid;
     grid-template-columns: 3fr 2fr 1.5fr 1.5fr 1.5fr 40px; 
@@ -352,7 +379,6 @@ button:active {
 .col-texto { text-align: left; padding-left: 5px; }
 .col-num { text-align: center; }
 
-/* Checklist de Compras */
 .item-compra {
     background: white;
     padding: 12px;
@@ -384,32 +410,31 @@ button:active {
 }
 
 /* =========================================
-   8. NAVEGAÇÃO (BOTÕES FLUTUANTES) - NOVO!
+   8. NAVEGAÇÃO (BOTÕES FLUTUANTES)
    ========================================= */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    /* Fundo branco com sombra para destacar do conteúdo */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(5px);
     display: flex;
-    gap: 15px; /* Espaço entre os botões */
-    padding: 10px 20px; /* Padding interno para criar o efeito flutuante */
+    gap: 15px;
+    padding: 10px 20px;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     height: auto;
-    border-top: none; /* Remove a borda simples antiga */
+    border-top: none;
 }
 
 .nav-btn {
-    background-color: #f1f3f5; /* Cinza claro para estado inativo */
+    background-color: #f1f3f5;
     color: #6c757d;
-    border-radius: 12px; /* Bordas arredondadas estilo botão moderno */
+    border-radius: 12px;
     margin: 0;
     display: flex;
-    flex-direction: row; /* Ícone ao lado do texto ou centralizado */
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     font-size: 14px;
@@ -417,21 +442,19 @@ button:active {
     flex: 1;
     border: none;
     padding: 12px;
-    gap: 8px; /* Espaço entre ícone e texto */
+    gap: 8px;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* Estado Ativo (Selecionado) */
 .nav-btn.active {
-    background-color: #007bff; /* Azul vibrante */
+    background-color: #007bff;
     color: white;
-    border-top: none; /* Remove a linha superior antiga */
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4); /* Sombra colorida (Glow) */
-    transform: translateY(-2px); /* Leve elevação */
+    border-top: none;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+    transform: translateY(-2px);
 }
 
-/* Ícones dentro do botão (opcional, ajusta tamanho) */
 .nav-btn i, .nav-btn span {
     pointer-events: none;
 }
