@@ -107,7 +107,7 @@ function iniciarModoCalculadora(modo) {
 
 function configurarInterfaceDetalhada(modoEdicaoAtivo) {
     interfaceDetalhada.classList.remove('hidden');
-    // Header da tabela é controlado no UI.renderItensCalculadora agora
+    // Header da tabela controlado pelo UI.renderItensCalculadora
     if(modoEdicaoAtivo) {
         formItem.classList.remove('hidden');
         btnLimparLista.classList.remove('hidden');
@@ -117,16 +117,31 @@ function configurarInterfaceDetalhada(modoEdicaoAtivo) {
     }
 }
 
-// --- LÓGICA CALCULADORA GERAL (FITA) ---
+// --- LÓGICA CALCULADORA GERAL (FITA COM PERSISTÊNCIA) ---
 function iniciarCalculadoraGeralLogica() {
     UI.renderCalculadoraGeral(); 
-    estadoAtual.totalGeral = 0;
     
     const visorTotal = document.getElementById('valor-total-geral');
     const inputCalc = document.getElementById('input-calc-geral');
     const historico = document.getElementById('historico-lista');
     const botoes = document.querySelectorAll('.btn-calc-action');
     const btnLimpar = document.getElementById('btn-limpar-geral');
+
+    // [NOVO] 1. Carrega dados salvos se existirem
+    const dadosSalvos = localStorage.getItem('calc_geral_dados');
+    if (dadosSalvos) {
+        const dados = JSON.parse(dadosSalvos);
+        estadoAtual.totalGeral = dados.total;
+        visorTotal.textContent = Calc.formatarMoeda(dados.total);
+        historico.innerHTML = dados.html;
+        
+        // Rola para o final
+        setTimeout(() => {
+            historico.parentElement.scrollTop = historico.parentElement.scrollHeight;
+        }, 100);
+    } else {
+        estadoAtual.totalGeral = 0;
+    }
 
     setTimeout(() => inputCalc.focus(), 300);
 
@@ -141,6 +156,13 @@ function iniciarCalculadoraGeralLogica() {
         historico.parentElement.scrollTop = historico.parentElement.scrollHeight;
     };
 
+    const salvarEstado = () => {
+        localStorage.setItem('calc_geral_dados', JSON.stringify({
+            total: estadoAtual.totalGeral,
+            html: historico.innerHTML
+        }));
+    };
+
     botoes.forEach(btn => {
         btn.addEventListener('click', () => {
             const inputVal = parseFloat(inputCalc.value);
@@ -150,6 +172,7 @@ function iniciarCalculadoraGeralLogica() {
 
             let opSymbol = '';
             
+            // Se for o primeiro cálculo do zero absoluto
             if (historico.children.length === 0 && estadoAtual.totalGeral === 0) {
                  if(op === 'mult' || op === 'div') {
                      estadoAtual.totalGeral = inputVal;
@@ -171,17 +194,26 @@ function iniciarCalculadoraGeralLogica() {
             visorTotal.textContent = Calc.formatarMoeda(estadoAtual.totalGeral);
             adicionarAoHistorico(opSymbol, inputVal, estadoAtual.totalGeral);
             
+            // [NOVO] 2. Salva automaticamente após cada operação
+            salvarEstado();
+
             inputCalc.value = '';
             inputCalc.focus();
         });
     });
 
     btnLimpar.addEventListener('click', () => {
-        estadoAtual.totalGeral = 0;
-        visorTotal.textContent = '0.00';
-        historico.innerHTML = '';
-        inputCalc.value = '';
-        inputCalc.focus();
+        if(confirm("Tem certeza que deseja limpar todos os cálculos?")) {
+            estadoAtual.totalGeral = 0;
+            visorTotal.textContent = '0.00';
+            historico.innerHTML = '';
+            
+            // [NOVO] 3. Remove do armazenamento ao limpar
+            localStorage.removeItem('calc_geral_dados');
+            
+            inputCalc.value = '';
+            inputCalc.focus();
+        }
     });
 }
 
@@ -224,7 +256,7 @@ function importarListaParaCalculadora(lista) {
     UI.switchView('view-calculadora');
     menuCalc.classList.add('hidden');
     estadoAtual.modo = 'importar'; 
-    configurarInterfaceDetalhada(false); // Esconde form
+    configurarInterfaceDetalhada(false); 
 
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
     document.getElementById('nome-lista-ativa').value = lista.nome;
