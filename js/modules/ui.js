@@ -39,7 +39,7 @@ export function renderCardsListas(listas, onDelete, onEdit, onUse) {
     });
 }
 
-// 2. Renderiza a NOVA Calculadora Geral (Estilo Fita com Input)
+// 2. Renderiza a Calculadora Geral (Estilo Fita)
 export function renderCalculadoraGeral() {
     const container = $('#interface-geral');
     container.innerHTML = `
@@ -83,7 +83,7 @@ export function renderItensCalculadora(itens, onDeleteItem, onConfirmarItem, mod
         div.className = 'item-compra';
         
         if (modoEdicao) {
-            // MODO CHECKLIST
+            // === MODO CHECKLIST (IMPORTAR/COMPRAR) ===
             div.classList.add('item-ativo');
             if (item.confirmado) div.classList.add('item-confirmado'); 
 
@@ -140,19 +140,26 @@ export function renderItensCalculadora(itens, onDeleteItem, onConfirmarItem, mod
             });
 
         } else {
-            // MODO CRIAR/EDITAR
+            // === MODO CRIAR/EDITAR (ESTÁTICO) ===
             const textoProduto = item.marca 
                 ? `<strong>${item.produto}</strong> <small>(${item.marca})</small>` 
                 : `<strong>${item.produto}</strong>`;
+
+            // Lógica para mostrar detalhes do preço (ex: 2 un x R$ 5.00)
+            let detalheTexto = `${item.quantidade} ${item.unidade}`;
+            if (item.preco > 0) {
+                detalheTexto += ` x R$ ${formatarMoeda(item.preco)}`;
+            }
 
             div.innerHTML = `
                 <div class="item-top-row">
                     <div class="item-left">
                         <span class="item-nome">${textoProduto}</span>
-                        <div class="item-detalhe">${item.quantidade} ${item.unidade}</div>
+                        <div class="item-detalhe">${detalheTexto}</div>
                     </div>
-                    <div class="item-right">
-                         <button class="btn-mini-del">🗑️</button>
+                    <div class="item-right" style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
+                         <div style="font-weight:bold; color:#007bff; font-size:14px;">R$ ${formatarMoeda(item.total)}</div>
+                         <button class="btn-mini-del" style="background:none; border:none; cursor:pointer; color:red; font-size:18px;">🗑️</button>
                     </div>
                 </div>
             `;
