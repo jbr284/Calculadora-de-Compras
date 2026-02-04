@@ -34,6 +34,7 @@ function carregarMinhasListas() {
 
 // --- EVENTOS ---
 function setupEventListeners() {
+    // Navegação Abas Rodapé
     navBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             UI.switchView(btn.dataset.target);
@@ -42,14 +43,20 @@ function setupEventListeners() {
         });
     });
 
+    // Menu Calculadora (Botões grandes)
     document.querySelectorAll('.btn-option').forEach(btn => {
         btn.addEventListener('click', () => iniciarModoCalculadora(btn.dataset.mode));
     });
 
+    // [CORREÇÃO] Evento Global para Botão Voltar (Captura btn-back E btn-back-small)
     document.body.addEventListener('click', (e) => {
-        if(e.target.classList.contains('btn-back')) resetCalculadoraView();
+        // Verifica se o elemento clicado (ou o pai dele) tem a classe de voltar
+        if(e.target.classList.contains('btn-back') || e.target.classList.contains('btn-back-small')) {
+            resetCalculadoraView();
+        }
     });
 
+    // Botões da Lista
     const btnAdd = document.getElementById('btn-add-item');
     if(btnAdd) btnAdd.addEventListener('click', adicionarItemDetalhado);
     
@@ -64,12 +71,14 @@ function setupEventListeners() {
         });
     }
 
+    // FAB (Botão Flutuante)
     const fab = document.getElementById('btn-nova-lista-rapida');
     if(fab) fab.addEventListener('click', () => { 
         UI.switchView('view-calculadora'); 
         iniciarModoCalculadora('criar'); 
     });
 
+    // Modal
     document.getElementById('btn-fechar-modal').addEventListener('click', () => {
         document.getElementById('modal-importar').classList.add('hidden');
     });
@@ -78,6 +87,7 @@ function setupEventListeners() {
 // --- CONTROLLERS ---
 
 function resetCalculadoraView() {
+    // Esconde tudo e mostra o menu
     menuCalc.classList.remove('hidden');
     interfaceGeral.classList.add('hidden');
     interfaceDetalhada.classList.add('hidden');
@@ -225,11 +235,8 @@ function importarListaParaCalculadora(lista) {
     estadoAtual.modo = 'importar'; 
     configurarInterfaceDetalhada(false); // Esconde form
 
-    // Carrega a lista
+    // Carrega a lista mantendo os preços salvos
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
-    
-    // [CORREÇÃO] REMOVIDO o código que zerava os preços.
-    // Agora ele mantém os preços salvos.
     
     document.getElementById('nome-lista-ativa').value = lista.nome;
     atualizarUIListaDetalhada();
@@ -286,9 +293,6 @@ function atualizarUIListaDetalhada() {
             // Toggle Desfazer
             if (item.confirmado) {
                 item.confirmado = false;
-                // Nota: Não zeramos o preço aqui para permitir edição fácil,
-                // apenas zeramos o total calculado visualmente ou status
-                // Se quiser zerar o total: item.total = 0;
                 atualizarUIListaDetalhada();
                 atualizarTotal();
                 return;
@@ -316,7 +320,6 @@ function atualizarUIListaDetalhada() {
 }
 
 function atualizarTotal() {
-    // Soma itens confirmados ou com total > 0
     const total = estadoAtual.listaAtiva.itens.reduce((acc, item) => acc + (item.total || 0), 0);
     const el = document.getElementById('total-detalhado');
     if(el) el.textContent = Calc.formatarMoeda(total);
@@ -330,10 +333,6 @@ function salvarListaAtual() {
     
     Storage.saveLista(estadoAtual.listaAtiva);
     UI.showMessage("Lista salva!");
-    
-    // Opcional: Voltar para home ou ficar na lista
-    // UI.switchView('view-listas');
-    // carregarMinhasListas();
 }
 
 init();
