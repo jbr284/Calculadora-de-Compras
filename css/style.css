@@ -2,7 +2,7 @@
    1. RESET E BASE
    ========================================= */
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-body { background-color: #f4f4f9; color: #333; padding-bottom: 80px; height: 100vh; overflow-y: auto; }
+body { background-color: #f4f4f9; color: #333; padding-bottom: 90px; height: 100vh; overflow-y: auto; }
 
 /* Cabeçalho */
 header { background-color: #007bff; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 900; }
@@ -69,32 +69,30 @@ button:active { transform: scale(0.98); }
 .btn-op-div { background-color: #17a2b8; color: white; }
 .btn-op-clear { background-color: #6c757d; color: white; margin-top: 10px; }
 
-/* === CONFIGURAÇÃO DE TABELA RESPONSIVA (COM SCROLL) === */
+/* === CONFIGURAÇÃO DE TABELA RESPONSIVA (COMPACTA) === */
+
+/* Container: removemos o scroll horizontal forçado */
 .tabela-scroll-container {
     width: 100%;
-    overflow-x: auto; /* Permite rolar horizontalmente */
+    overflow-x: hidden; /* [MUDANÇA] Esconde barra de rolagem */
     border: 1px solid #eee;
     border-radius: 8px;
     margin-bottom: 15px;
     background: white;
 }
 
-#lista-itens-detalhada {
-    width: 100%;
-    /* O scroll agora é controlado pelo pai .tabela-scroll-container */
-    overflow-x: visible; 
-}
+#lista-itens-detalhada { width: 100%; }
 
-/* Configuração do Grid para Tabela (Modo Criar) */
-/* Colunas: Produto(3) Marca(2) Qtd(1.5) Preço(1.5) Total(1.5) Ação(40px) */
+/* Configuração do Grid Base */
 .tabela-header, .item-tabela {
     display: grid;
-    grid-template-columns: 3fr 2fr 1.5fr 1.5fr 1.5fr 40px; 
-    gap: 5px;
+    /* Proporções iniciais */
+    grid-template-columns: 3fr 2fr 1.5fr 1.5fr 1.5fr 35px; 
+    gap: 4px; /* [MUDANÇA] Gap reduzido */
     align-items: center;
-    padding: 10px 5px;
-    /* [IMPORTANTE] Largura Mínima para forçar o scroll e não esconder colunas */
-    min-width: 600px; 
+    padding: 10px 4px; /* [MUDANÇA] Padding lateral reduzido */
+    width: 100%;
+    /* [IMPORTANTE] Removido min-width: 600px para não forçar scroll */
 }
 
 .tabela-header {
@@ -102,32 +100,54 @@ button:active { transform: scale(0.98); }
     color: white;
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: 11px; /* [MUDANÇA] Fonte base menor */
+    border-radius: 8px 8px 0 0;
     text-align: center;
+    letter-spacing: 0.5px;
 }
 
 .item-tabela {
     border-bottom: 1px solid #eee;
-    font-size: 14px;
+    font-size: 13px; /* [MUDANÇA] Fonte base menor */
     text-align: center;
 }
 .item-tabela:nth-child(even) { background-color: #f9f9f9; }
-.item-tabela div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.col-texto { text-align: left; padding-left: 5px; }
-.col-num { text-align: center; }
 
-/* Modo Checklist (Importar) - Não precisa de min-width grande */
-.item-compra {
-    background: white;
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    border: 1px solid #eee;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+/* Garante que texto longo não quebre o layout (trunca com ...) */
+.item-tabela div { 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
 }
+
+.col-texto { text-align: left; padding-left: 2px; }
+.col-num { text-align: center; }
+.btn-mini-del { background: none; border: none; cursor: pointer; color: #dc3545; font-size: 16px; padding: 0; }
+
+/* === [NOVO] AJUSTES PARA CELULARES (Tela < 480px) === */
+@media (max-width: 480px) {
+    .tabela-header, .item-tabela {
+        /* [MUDANÇA CRÍTICA] Reajuste de colunas para mobile.
+           Dá mais espaço pro Produto (2.5fr) e aperta os números (1fr/1.2fr) */
+        grid-template-columns: 2.5fr 1.5fr 1fr 1.2fr 1.2fr 25px;
+        gap: 2px; /* Gap mínimo */
+        padding: 8px 2px;
+    }
+
+    .tabela-header {
+        font-size: 9px; /* [MUDANÇA] Fonte minúscula no header */
+        letter-spacing: 0;
+    }
+
+    .item-tabela {
+        font-size: 10px; /* [MUDANÇA] Fonte muito pequena nos itens */
+    }
+    
+    .btn-mini-del { font-size: 12px; }
+}
+
+/* Modo Checklist (Importar) */
+.item-compra { background: white; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #eee; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
 .item-compra.item-ativo { border-left: 5px solid #ccc; }
 .item-compra.item-confirmado { border-left: 5px solid #28a745; background-color: #f0fff4; }
 
