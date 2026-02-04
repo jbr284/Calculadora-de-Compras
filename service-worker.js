@@ -1,4 +1,4 @@
-const CACHE_NAME = 'compras-pwa-v10';
+const CACHE_NAME = 'compras-pwa-v11';
 const FILES_TO_CACHE = [
   './',
   './index.html',
@@ -40,6 +40,7 @@ self.addEventListener('activate', (evt) => {
   self.clients.claim();
 
 });
+
 
 
 
