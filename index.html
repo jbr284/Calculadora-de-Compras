@@ -20,31 +20,21 @@
         <section id="view-listas" class="view active">
             <h2>Minhas Listas Salvas</h2>
             <div id="lista-cards-container" class="cards-container">
-                <p class="empty-msg">Nenhuma lista salva.</p>
-            </div>
-            <button id="btn-nova-lista-rapida" class="fab">+</button>
+                </div>
+            <button id="btn-nova-lista-rapida" class="fab" aria-label="Nova Lista">+</button>
         </section>
 
         <section id="view-calculadora" class="view hidden">
             
             <div id="calc-menu" class="calc-options">
-                <h3>Escolha o Modo</h3>
-                <button class="btn-option" data-mode="geral">🔢 Calculadora Geral</button>
-                <button class="btn-option" data-mode="criar">📝 Calcular e Gerar Lista</button>
+                <h3>O que deseja fazer?</h3>
+                <button class="btn-option" data-mode="geral">🔢 Calculadora Comum</button>
+                <button class="btn-option" data-mode="criar">📝 Criar Nova Lista</button>
                 <button class="btn-option" data-mode="importar">📂 Importar Lista Salva</button>
             </div>
 
             <div id="interface-geral" class="calc-interface hidden">
-                <div class="display-total-geral">
-                    R$ <span id="valor-total-geral">0.00</span>
                 </div>
-                <div class="form-geral">
-                    <input type="number" id="input-valor-geral" placeholder="Valor (R$)" step="0.01">
-                    <button id="btn-somar-geral">SOMAR (+)</button>
-                </div>
-                <ul id="historico-geral"></ul>
-                <button class="btn-back">Voltar</button>
-            </div>
 
             <div id="interface-detalhada" class="calc-interface hidden">
                 <div class="top-bar">
@@ -54,7 +44,6 @@
 
                 <form id="form-item">
                     <input type="text" id="produto" placeholder="Produto (Ex: Arroz)">
-                    
                     <input type="text" id="marca" placeholder="Marca (Opcional)">
 
                     <div class="row">
@@ -75,19 +64,26 @@
                             <option value="L">/ L</option>
                         </select>
                     </div>
-                    <button type="button" id="btn-add-item">Adicionar na Lista</button>
+                    <button type="button" id="btn-add-item">Adicionar Item</button>
                 </form>
 
                 <div class="total-bar">
                     Total: R$ <span id="total-detalhado">0.00</span>
                 </div>
 
-                <div id="lista-itens-detalhada">
-                    </div>
+                <div id="header-tabela-criar" class="tabela-header hidden">
+                    <div>Produto</div>
+                    <div>Marca</div>
+                    <div>Qtd</div>
+                    <div>Preço</div>
+                    <div>Total</div>
+                    <div>Wait</div> </div>
+
+                <div id="lista-itens-detalhada"></div>
 
                 <div class="actions-bar">
                     <button id="btn-salvar-lista" class="btn-success">Salvar Lista</button>
-                    <button id="btn-limpar-lista" class="btn-danger">Limpar</button>
+                    <button id="btn-limpar-lista" class="btn-danger">Limpar Tudo</button>
                 </div>
             </div>
 
@@ -95,25 +91,20 @@
     </main>
 
     <nav class="bottom-nav">
-        <button class="nav-btn active" data-target="view-listas">
-            📋 Listas
-        </button>
-        <button class="nav-btn" data-target="view-calculadora">
-            🧮 Calculadora
-        </button>
+        <button class="nav-btn active" data-target="view-listas">📋 Listas</button>
+        <button class="nav-btn" data-target="view-calculadora">🧮 App</button>
     </nav>
 
     <div id="modal-importar" class="modal hidden">
         <div class="modal-content">
-            <h3>Selecione uma Lista</h3>
+            <h3>Selecione para Comprar</h3>
             <div id="lista-importar-container"></div>
-            <button id="btn-fechar-modal">Cancelar</button>
+            <button id="btn-fechar-modal" style="margin-top:10px; background:#666;">Cancelar</button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
-    
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
