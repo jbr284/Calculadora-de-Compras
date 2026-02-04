@@ -5,10 +5,10 @@ import * as UI from './modules/ui.js';
 let estadoAtual = {
     modo: null, 
     listaAtiva: { id: null, nome: '', itens: [] },
-    totalGeral: 0 // Acumulador para a calc geral
+    totalGeral: 0
 };
 
-// --- ELEMENTOS ---
+// --- ELEMENTOS DOM ---
 const navBtns = document.querySelectorAll('.nav-btn');
 const menuCalc = document.getElementById('calc-menu');
 const interfaceGeral = document.getElementById('interface-geral');
@@ -16,6 +16,7 @@ const interfaceDetalhada = document.getElementById('interface-detalhada');
 const formItem = document.getElementById('form-item');
 const btnLimparLista = document.getElementById('btn-limpar-lista');
 
+// --- INICIALIZAÇÃO ---
 function init() {
     carregarMinhasListas();
     setupEventListeners();
@@ -31,6 +32,7 @@ function carregarMinhasListas() {
     );
 }
 
+// --- EVENTOS ---
 function setupEventListeners() {
     navBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -55,7 +57,7 @@ function setupEventListeners() {
 
     if (btnLimparLista) {
         btnLimparLista.addEventListener('click', () => {
-            if(confirm("Limpar lista?")) {
+            if(confirm("Deseja realmente limpar toda a lista?")) {
                 estadoAtual.listaAtiva.itens = [];
                 atualizarUIListaDetalhada();
             }
@@ -123,7 +125,6 @@ function iniciarCalculadoraGeralLogica() {
     const botoes = document.querySelectorAll('.btn-calc-action');
     const btnLimpar = document.getElementById('btn-limpar-geral');
 
-    // Foca no input ao abrir
     setTimeout(() => inputCalc.focus(), 300);
 
     const adicionarAoHistorico = (opSymbol, valor, novoTotal) => {
@@ -134,7 +135,6 @@ function iniciarCalculadoraGeralLogica() {
             <span>= ${Calc.formatarMoeda(novoTotal)}</span>
         `;
         historico.appendChild(li);
-        // Rola para baixo
         historico.parentElement.scrollTop = historico.parentElement.scrollHeight;
     };
 
@@ -143,52 +143,32 @@ function iniciarCalculadoraGeralLogica() {
             const inputVal = parseFloat(inputCalc.value);
             const op = btn.dataset.op;
 
-            // Se input vazio, ignora
             if (isNaN(inputVal)) return;
 
-            // Lógica Acumulativa
-            // Se for o primeiro cálculo e total for 0, assumimos adição para começar, a menos que seja mult/div (aí 0 * x = 0)
-            // Mas para "Fita", é comum o primeiro número virar o total.
             let opSymbol = '';
             
-            // Caso especial: Primeira entrada
+            // Lógica para primeiro valor
             if (historico.children.length === 0 && estadoAtual.totalGeral === 0) {
-                 // Se for soma ou subtração, aplica normal. Se for mult/div, seta o valor como inicial.
                  if(op === 'mult' || op === 'div') {
                      estadoAtual.totalGeral = inputVal;
                      opSymbol = 'Início';
-                 } else {
-                     // Deixa passar pro switch normal (0 + X ou 0 - X)
                  }
             }
 
             if (!opSymbol) {
                 switch (op) {
-                    case 'soma':
-                        estadoAtual.totalGeral += inputVal;
-                        opSymbol = '+';
-                        break;
-                    case 'subt':
-                        estadoAtual.totalGeral -= inputVal;
-                        opSymbol = '-';
-                        break;
-                    case 'mult':
-                        estadoAtual.totalGeral *= inputVal;
-                        opSymbol = '×';
-                        break;
-                    case 'div':
-                        if(inputVal === 0) return alert("Divisão por zero!");
-                        estadoAtual.totalGeral /= inputVal;
-                        opSymbol = '÷';
-                        break;
+                    case 'soma': estadoAtual.totalGeral += inputVal; opSymbol = '+'; break;
+                    case 'subt': estadoAtual.totalGeral -= inputVal; opSymbol = '-'; break;
+                    case 'mult': estadoAtual.totalGeral *= inputVal; opSymbol = '×'; break;
+                    case 'div': 
+                        if(inputVal === 0) return alert("Erro: Divisão por zero");
+                        estadoAtual.totalGeral /= inputVal; opSymbol = '÷'; break;
                 }
             }
 
-            // Atualiza Interface
             visorTotal.textContent = Calc.formatarMoeda(estadoAtual.totalGeral);
             adicionarAoHistorico(opSymbol, inputVal, estadoAtual.totalGeral);
             
-            // Limpa e foca
             inputCalc.value = '';
             inputCalc.focus();
         });
@@ -203,18 +183,20 @@ function iniciarCalculadoraGeralLogica() {
     });
 }
 
-// --- MODO EDITAR E IMPORTAR ---
+// --- MODO EDITAR ---
 function editarLista(lista) {
     UI.switchView('view-calculadora');
     menuCalc.classList.add('hidden');
-    estadoAtual.modo = 'criar'; 
-    configurarInterfaceDetalhada(true);
+    estadoAtual.modo = 'criar'; // Usa interface de criação/edição
+    configurarInterfaceDetalhada(true); // Mostra formulário e botão limpar
 
+    // Carrega a lista completa, mantendo preços se existirem
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
     document.getElementById('nome-lista-ativa').value = lista.nome;
     atualizarUIListaDetalhada();
 }
 
+// --- MODO IMPORTAR/COMPRAR ---
 function abrirModalImportar() {
     const modal = document.getElementById('modal-importar');
     const container = document.getElementById('lista-importar-container');
@@ -241,18 +223,19 @@ function importarListaParaCalculadora(lista) {
     UI.switchView('view-calculadora');
     menuCalc.classList.add('hidden');
     estadoAtual.modo = 'importar'; 
-    configurarInterfaceDetalhada(false); 
+    configurarInterfaceDetalhada(false); // Esconde form
 
+    // Carrega a lista
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
     
-    estadoAtual.listaAtiva.itens = estadoAtual.listaAtiva.itens.map(i => ({
-        ...i, preco: 0, total: 0, confirmado: false
-    }));
-
+    // [CORREÇÃO] REMOVIDO o código que zerava os preços.
+    // Agora ele mantém os preços salvos.
+    
     document.getElementById('nome-lista-ativa').value = lista.nome;
     atualizarUIListaDetalhada();
 }
 
+// --- ADICIONAR ITEM ---
 function adicionarItemDetalhado() {
     const els = {
         prod: document.getElementById('produto'),
@@ -287,6 +270,7 @@ function adicionarItemDetalhado() {
     atualizarUIListaDetalhada();
 }
 
+// --- RENDERIZAÇÃO E ATUALIZAÇÃO ---
 function atualizarUIListaDetalhada() {
     const isImport = estadoAtual.modo === 'importar';
 
@@ -299,9 +283,12 @@ function atualizarUIListaDetalhada() {
         (index, dados) => {
             const item = estadoAtual.listaAtiva.itens[index];
             
+            // Toggle Desfazer
             if (item.confirmado) {
                 item.confirmado = false;
-                item.total = 0;
+                // Nota: Não zeramos o preço aqui para permitir edição fácil,
+                // apenas zeramos o total calculado visualmente ou status
+                // Se quiser zerar o total: item.total = 0;
                 atualizarUIListaDetalhada();
                 atualizarTotal();
                 return;
@@ -329,6 +316,7 @@ function atualizarUIListaDetalhada() {
 }
 
 function atualizarTotal() {
+    // Soma itens confirmados ou com total > 0
     const total = estadoAtual.listaAtiva.itens.reduce((acc, item) => acc + (item.total || 0), 0);
     const el = document.getElementById('total-detalhado');
     if(el) el.textContent = Calc.formatarMoeda(total);
@@ -342,8 +330,10 @@ function salvarListaAtual() {
     
     Storage.saveLista(estadoAtual.listaAtiva);
     UI.showMessage("Lista salva!");
-    UI.switchView('view-listas');
-    carregarMinhasListas();
+    
+    // Opcional: Voltar para home ou ficar na lista
+    // UI.switchView('view-listas');
+    // carregarMinhasListas();
 }
 
 init();
