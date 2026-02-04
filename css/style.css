@@ -69,30 +69,33 @@ button:active { transform: scale(0.98); }
 .btn-op-div { background-color: #17a2b8; color: white; }
 .btn-op-clear { background-color: #6c757d; color: white; margin-top: 10px; }
 
-/* === CONFIGURAÇÃO DE TABELA RESPONSIVA (COMPACTA) === */
+/* === CONFIGURAÇÃO DE TABELA "FIT TO SCREEN" (SEM SCROLL) === */
 
-/* Container: removemos o scroll horizontal forçado */
+/* Container geral sem rolagem horizontal */
 .tabela-scroll-container {
     width: 100%;
-    overflow-x: hidden; /* [MUDANÇA] Esconde barra de rolagem */
+    overflow: hidden; /* Corta o que sobrar, não rola */
     border: 1px solid #eee;
     border-radius: 8px;
     margin-bottom: 15px;
     background: white;
 }
 
-#lista-itens-detalhada { width: 100%; }
+#lista-itens-detalhada { 
+    width: 100%; 
+}
 
-/* Configuração do Grid Base */
+/* Configuração do Grid de Colunas */
 .tabela-header, .item-tabela {
     display: grid;
-    /* Proporções iniciais */
-    grid-template-columns: 3fr 2fr 1.5fr 1.5fr 1.5fr 35px; 
-    gap: 4px; /* [MUDANÇA] Gap reduzido */
+    /* Grid "minmax(0, Xfr)" força o navegador a encolher a coluna se o texto for grande.
+       Proporção: Produto(30%) Marca(20%) Qtd(10%) Preço(15%) Total(20%) Del(5%)
+    */
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 1.5fr) minmax(0, 2fr) 25px; 
+    gap: 2px;
     align-items: center;
-    padding: 10px 4px; /* [MUDANÇA] Padding lateral reduzido */
+    padding: 10px 4px;
     width: 100%;
-    /* [IMPORTANTE] Removido min-width: 600px para não forçar scroll */
 }
 
 .tabela-header {
@@ -100,7 +103,7 @@ button:active { transform: scale(0.98); }
     color: white;
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 11px; /* [MUDANÇA] Fonte base menor */
+    font-size: 11px;
     border-radius: 8px 8px 0 0;
     text-align: center;
     letter-spacing: 0.5px;
@@ -108,12 +111,12 @@ button:active { transform: scale(0.98); }
 
 .item-tabela {
     border-bottom: 1px solid #eee;
-    font-size: 13px; /* [MUDANÇA] Fonte base menor */
+    font-size: 13px;
     text-align: center;
 }
 .item-tabela:nth-child(even) { background-color: #f9f9f9; }
 
-/* Garante que texto longo não quebre o layout (trunca com ...) */
+/* TRUNCA O TEXTO: Adiciona "..." se não couber */
 .item-tabela div { 
     overflow: hidden; 
     text-overflow: ellipsis; 
@@ -122,28 +125,27 @@ button:active { transform: scale(0.98); }
 
 .col-texto { text-align: left; padding-left: 2px; }
 .col-num { text-align: center; }
-.btn-mini-del { background: none; border: none; cursor: pointer; color: #dc3545; font-size: 16px; padding: 0; }
+.btn-mini-del { background: none; border: none; cursor: pointer; color: #dc3545; font-size: 14px; padding: 0; display: flex; justify-content: center; }
 
-/* === [NOVO] AJUSTES PARA CELULARES (Tela < 480px) === */
+/* === AJUSTES EXTREMOS PARA CELULAR (Tela < 480px) === */
 @media (max-width: 480px) {
-    .tabela-header, .item-tabela {
-        /* [MUDANÇA CRÍTICA] Reajuste de colunas para mobile.
-           Dá mais espaço pro Produto (2.5fr) e aperta os números (1fr/1.2fr) */
-        grid-template-columns: 2.5fr 1.5fr 1fr 1.2fr 1.2fr 25px;
-        gap: 2px; /* Gap mínimo */
-        padding: 8px 2px;
-    }
-
     .tabela-header {
-        font-size: 9px; /* [MUDANÇA] Fonte minúscula no header */
+        font-size: 9px; /* Fonte do cabeçalho bem pequena */
+        padding: 8px 2px;
         letter-spacing: 0;
     }
 
     .item-tabela {
-        font-size: 10px; /* [MUDANÇA] Fonte muito pequena nos itens */
+        font-size: 11px; /* Fonte dos dados pequena */
+        padding: 8px 2px;
     }
     
-    .btn-mini-del { font-size: 12px; }
+    /* Reajuste de colunas para mobile vertical */
+    .tabela-header, .item-tabela {
+        /* Diminui a marca, prioriza Produto e Total */
+        grid-template-columns: minmax(0, 2.5fr) minmax(0, 1.5fr) minmax(0, 1.2fr) minmax(0, 1.5fr) minmax(0, 1.8fr) 20px;
+        gap: 2px;
+    }
 }
 
 /* Modo Checklist (Importar) */
