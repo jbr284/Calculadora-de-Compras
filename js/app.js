@@ -34,7 +34,6 @@ function carregarMinhasListas() {
 
 // --- EVENTOS ---
 function setupEventListeners() {
-    // Navegação Abas Rodapé
     navBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             UI.switchView(btn.dataset.target);
@@ -43,20 +42,14 @@ function setupEventListeners() {
         });
     });
 
-    // Menu Calculadora (Botões grandes)
     document.querySelectorAll('.btn-option').forEach(btn => {
         btn.addEventListener('click', () => iniciarModoCalculadora(btn.dataset.mode));
     });
 
-    // [CORREÇÃO] Evento Global para Botão Voltar (Captura btn-back E btn-back-small)
     document.body.addEventListener('click', (e) => {
-        // Verifica se o elemento clicado (ou o pai dele) tem a classe de voltar
-        if(e.target.classList.contains('btn-back') || e.target.classList.contains('btn-back-small')) {
-            resetCalculadoraView();
-        }
+        if(e.target.classList.contains('btn-back')) resetCalculadoraView();
     });
 
-    // Botões da Lista
     const btnAdd = document.getElementById('btn-add-item');
     if(btnAdd) btnAdd.addEventListener('click', adicionarItemDetalhado);
     
@@ -71,14 +64,12 @@ function setupEventListeners() {
         });
     }
 
-    // FAB (Botão Flutuante)
     const fab = document.getElementById('btn-nova-lista-rapida');
     if(fab) fab.addEventListener('click', () => { 
         UI.switchView('view-calculadora'); 
         iniciarModoCalculadora('criar'); 
     });
 
-    // Modal
     document.getElementById('btn-fechar-modal').addEventListener('click', () => {
         document.getElementById('modal-importar').classList.add('hidden');
     });
@@ -87,7 +78,6 @@ function setupEventListeners() {
 // --- CONTROLLERS ---
 
 function resetCalculadoraView() {
-    // Esconde tudo e mostra o menu
     menuCalc.classList.remove('hidden');
     interfaceGeral.classList.add('hidden');
     interfaceDetalhada.classList.add('hidden');
@@ -157,7 +147,6 @@ function iniciarCalculadoraGeralLogica() {
 
             let opSymbol = '';
             
-            // Lógica para primeiro valor
             if (historico.children.length === 0 && estadoAtual.totalGeral === 0) {
                  if(op === 'mult' || op === 'div') {
                      estadoAtual.totalGeral = inputVal;
@@ -235,7 +224,7 @@ function importarListaParaCalculadora(lista) {
     estadoAtual.modo = 'importar'; 
     configurarInterfaceDetalhada(false); // Esconde form
 
-    // Carrega a lista mantendo os preços salvos
+    // Mantém os preços e totais salvos
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
     
     document.getElementById('nome-lista-ativa').value = lista.nome;
@@ -290,7 +279,6 @@ function atualizarUIListaDetalhada() {
         (index, dados) => {
             const item = estadoAtual.listaAtiva.itens[index];
             
-            // Toggle Desfazer
             if (item.confirmado) {
                 item.confirmado = false;
                 atualizarUIListaDetalhada();
