@@ -75,15 +75,27 @@ export function renderCalculadoraGeral() {
 // 3. Renderiza Itens (Criar e Checklist)
 export function renderItensCalculadora(itens, onDeleteItem, onConfirmarItem, modoEdicao = false) {
     const container = $('#lista-itens-detalhada');
+    const headerTabela = $('#header-tabela-criar'); // Pega o header azul
+    
     if(!container) return;
     container.innerHTML = '';
 
+    // Controle de exibição do Header Azul
+    if (modoEdicao) {
+        // Se for Modo Checklist (Comprar), esconde o header de tabela
+        if(headerTabela) headerTabela.classList.add('hidden');
+    } else {
+        // Se for Modo Criar, mostra o header
+        if(headerTabela) headerTabela.classList.remove('hidden');
+    }
+
     itens.forEach((item, index) => {
         const div = document.createElement('div');
-        div.className = 'item-compra';
         
         if (modoEdicao) {
             // === MODO CHECKLIST (IMPORTAR/COMPRAR) ===
+            // Usa estilo de CARD
+            div.className = 'item-compra';
             div.classList.add('item-ativo');
             if (item.confirmado) div.classList.add('item-confirmado'); 
 
@@ -140,27 +152,17 @@ export function renderItensCalculadora(itens, onDeleteItem, onConfirmarItem, mod
             });
 
         } else {
-            // === MODO CRIAR/EDITAR (ESTÁTICO) ===
-            const textoProduto = item.marca 
-                ? `<strong>${item.produto}</strong> <small>(${item.marca})</small>` 
-                : `<strong>${item.produto}</strong>`;
-
-            // Lógica para mostrar detalhes do preço (ex: 2 un x R$ 5.00)
-            let detalheTexto = `${item.quantidade} ${item.unidade}`;
-            if (item.preco > 0) {
-                detalheTexto += ` x R$ ${formatarMoeda(item.preco)}`;
-            }
+            // === MODO CRIAR/EDITAR (ESTILO TABELA) ===
+            div.className = 'item-tabela'; // Usa Grid Layout
 
             div.innerHTML = `
-                <div class="item-top-row">
-                    <div class="item-left">
-                        <span class="item-nome">${textoProduto}</span>
-                        <div class="item-detalhe">${detalheTexto}</div>
-                    </div>
-                    <div class="item-right" style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
-                         <div style="font-weight:bold; color:#007bff; font-size:14px;">R$ ${formatarMoeda(item.total)}</div>
-                         <button class="btn-mini-del" style="background:none; border:none; cursor:pointer; color:red; font-size:18px;">🗑️</button>
-                    </div>
+                <div class="col-texto"><strong>${item.produto}</strong></div>
+                <div class="col-texto" style="color:#555;">${item.marca || '-'}</div>
+                <div class="col-num">${item.quantidade} ${item.unidade}</div>
+                <div class="col-num">${item.preco > 0 ? formatarMoeda(item.preco) : '-'}</div>
+                <div class="col-num" style="font-weight:bold; color:#0099ff;">${item.total > 0 ? formatarMoeda(item.total) : '-'}</div>
+                <div>
+                     <button class="btn-mini-del">🗑️</button>
                 </div>
             `;
             div.querySelector('.btn-mini-del').addEventListener('click', (e) => {
