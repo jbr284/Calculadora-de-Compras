@@ -43,8 +43,10 @@ export function renderCardsListas(listas, onDelete, onEdit, onUse) {
 export function renderCalculadoraGeral() {
     const container = $('#interface-geral');
     container.innerHTML = `
-        <div class="top-bar">
-            <button class="btn-back">← Voltar</button>
+        <div class="top-bar-fixed">
+            <div class="top-bar">
+                <button class="btn-back">← Voltar</button>
+            </div>
         </div>
 
         <div class="calc-total-box">
@@ -67,7 +69,7 @@ export function renderCalculadoraGeral() {
                 <button class="btn-calc-action btn-op-mul" data-op="mult">×</button>
                 <button class="btn-calc-action btn-op-div" data-op="div">÷</button>
             </div>
-            <button class="btn-calc-action btn-op-clear" id="btn-limpar-geral">Limpar / Reiniciar</button>
+            <button class="btn-calc-action btn-op-clear" id="btn-limpar-geral">Limpar Dados</button>
         </div>
     `;
 }
@@ -75,17 +77,14 @@ export function renderCalculadoraGeral() {
 // 3. Renderiza Itens (Criar e Checklist)
 export function renderItensCalculadora(itens, onDeleteItem, onConfirmarItem, modoEdicao = false) {
     const container = $('#lista-itens-detalhada');
-    const headerTabela = $('#header-tabela-criar'); // Pega o header azul
+    const headerTabela = $('#header-tabela-criar');
     
     if(!container) return;
     container.innerHTML = '';
 
-    // Controle de exibição do Header Azul
     if (modoEdicao) {
-        // Se for Modo Checklist (Comprar), esconde o header de tabela
         if(headerTabela) headerTabela.classList.add('hidden');
     } else {
-        // Se for Modo Criar, mostra o header
         if(headerTabela) headerTabela.classList.remove('hidden');
     }
 
@@ -93,8 +92,7 @@ export function renderItensCalculadora(itens, onDeleteItem, onConfirmarItem, mod
         const div = document.createElement('div');
         
         if (modoEdicao) {
-            // === MODO CHECKLIST (IMPORTAR/COMPRAR) ===
-            // Usa estilo de CARD
+            // MODO CHECKLIST
             div.className = 'item-compra';
             div.classList.add('item-ativo');
             if (item.confirmado) div.classList.add('item-confirmado'); 
@@ -152,8 +150,8 @@ export function renderItensCalculadora(itens, onDeleteItem, onConfirmarItem, mod
             });
 
         } else {
-            // === MODO CRIAR/EDITAR (ESTILO TABELA) ===
-            div.className = 'item-tabela'; // Usa Grid Layout
+            // MODO TABELA (CRIAR)
+            div.className = 'item-tabela';
 
             div.innerHTML = `
                 <div class="col-texto"><strong>${item.produto}</strong></div>
