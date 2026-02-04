@@ -47,7 +47,9 @@ function setupEventListeners() {
     });
 
     document.body.addEventListener('click', (e) => {
-        if(e.target.classList.contains('btn-back')) resetCalculadoraView();
+        if(e.target.classList.contains('btn-back') || e.target.classList.contains('btn-back-small')) {
+            resetCalculadoraView();
+        }
     });
 
     const btnAdd = document.getElementById('btn-add-item');
@@ -105,6 +107,7 @@ function iniciarModoCalculadora(modo) {
 
 function configurarInterfaceDetalhada(modoEdicaoAtivo) {
     interfaceDetalhada.classList.remove('hidden');
+    // Header da tabela é controlado no UI.renderItensCalculadora agora
     if(modoEdicaoAtivo) {
         formItem.classList.remove('hidden');
         btnLimparLista.classList.remove('hidden');
@@ -186,10 +189,9 @@ function iniciarCalculadoraGeralLogica() {
 function editarLista(lista) {
     UI.switchView('view-calculadora');
     menuCalc.classList.add('hidden');
-    estadoAtual.modo = 'criar'; // Usa interface de criação/edição
-    configurarInterfaceDetalhada(true); // Mostra formulário e botão limpar
+    estadoAtual.modo = 'criar'; 
+    configurarInterfaceDetalhada(true); 
 
-    // Carrega a lista completa, mantendo preços se existirem
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
     document.getElementById('nome-lista-ativa').value = lista.nome;
     atualizarUIListaDetalhada();
@@ -224,9 +226,7 @@ function importarListaParaCalculadora(lista) {
     estadoAtual.modo = 'importar'; 
     configurarInterfaceDetalhada(false); // Esconde form
 
-    // Mantém os preços e totais salvos
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
-    
     document.getElementById('nome-lista-ativa').value = lista.nome;
     atualizarUIListaDetalhada();
 }
