@@ -1,364 +1,129 @@
 /* =========================================
    1. RESET E BASE
    ========================================= */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+body { background-color: #f4f4f9; color: #333; padding-bottom: 80px; }
 
-body {
-    background-color: #f4f4f9;
-    color: #333;
-    padding-bottom: 80px; /* Espaço para a barra de navegação inferior */
-}
+/* Cabeçalho */
+header { background-color: #007bff; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 900; }
+header h1 { font-size: 20px; font-weight: 600; }
 
-/* =========================================
-   2. CABEÇALHO (HEADER)
-   ========================================= */
-header {
-    background-color: #007bff;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 900;
-}
+/* Layout Views */
+main { padding: 15px; max-width: 600px; margin: 0 auto; }
+.view { display: none; animation: fadeIn 0.3s ease; }
+.view.active { display: block; }
+.hidden { display: none !important; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-header h1 {
-    font-size: 20px;
-    font-weight: 600;
-}
+/* Inputs e Botões */
+input, select, button { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; }
+input:focus, select:focus { border-color: #007bff; }
+button { background-color: #007bff; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+button:active { transform: scale(0.98); }
+.btn-success { background-color: #28a745; }
+.btn-danger { background-color: #dc3545; }
+.row { display: flex; gap: 10px; }
+.row input { flex: 2; }
+.row select { flex: 1; }
 
-/* =========================================
-   3. LAYOUT E VIEWS
-   ========================================= */
-main {
-    padding: 15px;
-    max-width: 600px;
-    margin: 0 auto;
-}
+/* Cards de Lista */
+.cards-container { display: flex; flex-direction: column; gap: 12px; }
+.card-lista { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); border-left: 5px solid #007bff; display: flex; justify-content: space-between; align-items: center; }
+.card-info { flex: 1; }
+.card-info h3 { font-size: 18px; margin-bottom: 5px; color: #333; }
+.card-info span { font-size: 12px; color: #666; }
 
-.view {
-    display: none;
-    animation: fadeIn 0.3s ease;
-}
+/* Botões de Ação Card */
+.card-actions { display: flex; gap: 8px; }
+.btn-card { width: 38px; height: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; margin: 0; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.btn-card.use { background-color: #28a745; }
+.btn-card.edit { background-color: #ffc107; color: #333; }
+.btn-card.del { background-color: #dc3545; }
+.empty-msg { text-align: center; margin-top: 40px; color: #777; font-size: 16px; line-height: 1.5; }
 
-.view.active {
-    display: block;
-}
+/* FAB */
+.fab { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; border-radius: 50%; font-size: 30px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 0; background-color: #007bff; }
 
-.hidden {
-    display: none !important;
-}
+/* Calculadora Geral (Fita) */
+.calc-total-box { background: #333; color: #fff; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.calc-total-label { font-size: 14px; color: #ccc; text-transform: uppercase; letter-spacing: 1px; }
+.calc-total-value { font-size: 42px; font-weight: bold; color: #28a745; font-family: monospace; }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+.tape-container { background: white; border: 1px solid #ddd; border-radius: 8px; height: 250px; overflow-y: auto; padding: 10px; margin-bottom: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
+.tape-list { list-style: none; display: flex; flex-direction: column; justify-content: flex-end; min-height: 100%; }
+.tape-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 18px; font-family: monospace; }
+.tape-item:last-child { border-bottom: none; font-weight: bold; background-color: #f9f9f9; }
+.tape-op { color: #007bff; font-weight: bold; margin-right: 10px; }
 
-/* =========================================
-   4. INPUTS E BOTÕES GERAIS
-   ========================================= */
-input, select, button {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    outline: none;
-}
-
-input:focus, select:focus {
-    border-color: #007bff;
-}
-
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-.btn-success {
-    background-color: #28a745;
-}
-
-.btn-danger {
-    background-color: #dc3545;
-}
-
-.row {
-    display: flex;
-    gap: 10px;
-}
-
-.row input {
-    flex: 2;
-}
-
-.row select {
-    flex: 1;
-}
-
-/* =========================================
-   5. CARDS DE LISTA (HOME)
-   ========================================= */
-.cards-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.card-lista {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    border-left: 5px solid #007bff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.card-info {
-    flex: 1;
-}
-
-.card-info h3 {
-    font-size: 18px;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-.card-info span {
-    font-size: 12px;
-    color: #666;
-}
-
-/* Botões de Ação do Card */
-.card-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-card {
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    color: white;
-    margin: 0;
-    padding: 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.btn-card.use {
-    background-color: #28a745;
-}
-
-.btn-card.edit {
-    background-color: #ffc107;
-    color: #333;
-}
-
-.btn-card.del {
-    background-color: #dc3545;
-}
-
-.empty-msg {
-    text-align: center;
-    margin-top: 40px;
-    color: #777;
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-/* FAB - Botão Flutuante */
-.fab {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    font-size: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    background-color: #007bff;
-}
-
-/* =========================================
-   6. NOVA CALCULADORA GERAL (ESTILO FITA)
-   ========================================= */
-
-.calc-total-box {
-    background: #333;
-    color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.calc-total-label {
-    font-size: 14px;
-    color: #ccc;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.calc-total-value {
-    font-size: 42px;
-    font-weight: bold;
-    color: #28a745;
-    font-family: monospace;
-}
-
-.tape-container {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    height: 250px;
-    overflow-y: auto;
-    padding: 10px;
-    margin-bottom: 15px;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.tape-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    min-height: 100%;
-}
-
-.tape-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px dashed #eee;
-    font-size: 18px;
-    font-family: monospace;
-}
-
-.tape-item:last-child {
-    border-bottom: none;
-    font-weight: bold;
-    background-color: #f9f9f9;
-}
-
-.tape-op {
-    color: #007bff;
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-.calc-input-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.input-calc-big {
-    font-size: 24px;
-    padding: 15px;
-    text-align: right;
-    font-weight: bold;
-    border: 2px solid #007bff;
-    border-radius: 8px;
-    height: 60px;
-}
-
-.btn-calc-action {
-    height: 60px;
-    font-size: 28px;
-    font-weight: bold;
-    border-radius: 8px;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
+.calc-input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.input-calc-big { font-size: 24px; padding: 15px; text-align: right; font-weight: bold; border: 2px solid #007bff; border-radius: 8px; height: 60px; }
+.btn-calc-action { height: 60px; font-size: 28px; font-weight: bold; border-radius: 8px; flex: 1; display: flex; align-items: center; justify-content: center; padding: 0; }
 .btn-op-add { background-color: #28a745; color: white; }
 .btn-op-sub { background-color: #dc3545; color: white; }
 .btn-op-mul { background-color: #ffc107; color: #333; }
 .btn-op-div { background-color: #17a2b8; color: white; }
 .btn-op-clear { background-color: #6c757d; color: white; margin-top: 10px; }
 
-/* =========================================
-   7. LISTA DE ITENS (CRIAR E CHECKLIST)
-   ========================================= */
-.item-compra {
-    background: white;
-    padding: 12px;
-    margin-bottom: 10px;
+/* === ESTILO DE TABELA (NOVO) === */
+/* Container para permitir scroll horizontal no mobile se a tabela for larga */
+#lista-itens-detalhada {
+    width: 100%;
+    overflow-x: auto; 
     border-radius: 8px;
-    border: 1px solid #eee;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* [ATUALIZADO] Alinhamento do topo do item */
-.item-top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start; /* Garante alinhamento topo */
+/* Configuração do Grid para alinhar colunas */
+/* Colunas: Produto(3) Marca(2) Qtd(1.5) Preço(1.5) Total(1.5) Ação(0.5) */
+.tabela-header, .item-tabela {
+    display: grid;
+    grid-template-columns: 3fr 2fr 1.5fr 1.5fr 1.5fr 40px; 
+    gap: 5px;
+    align-items: center;
+    padding: 10px 5px;
+    min-width: 500px; /* Garante que a tabela não esmague no mobile, ativa scroll */
 }
 
-.item-nome {
+/* Cabeçalho Azul */
+.tabela-header {
+    background-color: #0099ff; /* Azul Ciano da Imagem */
+    color: white;
     font-weight: bold;
-    font-size: 16px;
-    color: #333;
+    text-transform: uppercase;
+    font-size: 12px;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
 }
 
-.item-detalhe {
-    font-size: 13px;
-    color: #666;
-    margin-top: 4px;
+/* Linha da Tabela */
+.item-tabela {
+    background: white;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    text-align: center;
 }
 
-.btn-mini-del {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    padding: 5px;
-    color: #dc3545;
+.item-tabela:nth-child(even) {
+    background-color: #f9f9f9; /* Linha zebrada */
 }
 
-/* Checklist Inteligente */
+.item-tabela div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Coluna de texto alinhada a esquerda */
+.col-texto { text-align: left; padding-left: 5px; }
+.col-num { text-align: center; }
+
+.btn-mini-del { background: none; border: none; cursor: pointer; color: #dc3545; font-size: 16px; }
+
+/* === MODO CHECKLIST (Importar/Comprar) - Mantém card para facilitar toque === */
+.item-compra { background: white; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #eee; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
 .item-compra.item-ativo { border-left: 5px solid #ccc; }
 .item-compra.item-confirmado { border-left: 5px solid #28a745; background-color: #f0fff4; }
-
 .checklist-header { display: flex; gap: 10px; align-items: center; margin-bottom: 5px; }
 .input-marca-inline { border: none; border-bottom: 1px dashed #ccc; padding: 2px; width: 100%; font-size: 14px; background: transparent; }
-
 .checklist-controls { display: grid; grid-template-columns: 1.2fr 1fr 0.2fr 1.2fr 1fr 0.8fr; gap: 6px; align-items: center; }
 .input-compact { padding: 8px 4px !important; margin: 0 !important; font-size: 14px; text-align: center; height: 38px; }
 .select-compact { padding: 0 2px !important; margin: 0 !important; font-size: 13px; background-color: #f9f9f9; text-align: center; height: 38px; }
@@ -371,103 +136,17 @@ button:active {
     .btn-confirmar { grid-column: span 2; }
 }
 
-/* =========================================
-   8. NAVEGAÇÃO E MODAIS
-   ========================================= */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-    display: flex;
-    border-top: 1px solid #ddd;
-    height: 60px;
-    z-index: 1000;
-}
-
-.nav-btn {
-    background: transparent;
-    color: #777;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    flex: 1;
-    border: none;
-    padding: 5px;
-}
-
-.nav-btn.active {
-    color: #007bff;
-    border-top: 3px solid #007bff;
-    background-color: #f9f9ff;
-}
-
-.calc-options {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
-}
-
-.btn-option {
-    padding: 20px;
-    font-size: 18px;
-    background: white;
-    color: #007bff;
-    border: 2px solid #007bff;
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 12px;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-
-.item-importar {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-}
-
+/* Nav & Extras */
+.bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; height: 60px; z-index: 1000; }
+.nav-btn { background: transparent; color: #777; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; flex: 1; border: none; padding: 5px; }
+.nav-btn.active { color: #007bff; border-top: 3px solid #007bff; background-color: #f9f9ff; }
+.calc-options { display: flex; flex-direction: column; gap: 15px; text-align: center; }
+.btn-option { padding: 20px; font-size: 18px; background: white; color: #007bff; border: 2px solid #007bff; }
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.modal-content { background: white; padding: 20px; width: 90%; max-width: 400px; border-radius: 12px; max-height: 80vh; overflow-y: auto; }
+.item-importar { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
 .top-bar { display: flex; gap: 10px; margin-bottom: 15px; }
 .btn-back { background: #6c757d; width: auto; margin-bottom: 0; }
 .total-bar { background: #333; color: white; padding: 15px; border-radius: 8px; text-align: right; font-size: 20px; margin: 15px 0; font-weight: bold; }
 .actions-bar { display: flex; gap: 10px; margin-top: 20px; }
-
-.message {
-    position: fixed;
-    top: 70px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #28a745;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    z-index: 2000;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-}
+.message { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-align: center; width: 90%; max-width: 400px; }
