@@ -211,7 +211,6 @@ button:active {
    6. NOVA CALCULADORA GERAL (ESTILO FITA)
    ========================================= */
 
-/* Total no topo */
 .calc-total-box {
     background: #333;
     color: #fff;
@@ -232,16 +231,15 @@ button:active {
 .calc-total-value {
     font-size: 42px;
     font-weight: bold;
-    color: #28a745; /* Verde Dinheiro */
+    color: #28a745;
     font-family: monospace;
 }
 
-/* Lista Histórico (Fita) */
 .tape-container {
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
-    height: 250px; /* Altura fixa com scroll */
+    height: 250px;
     overflow-y: auto;
     padding: 10px;
     margin-bottom: 15px;
@@ -252,7 +250,7 @@ button:active {
     list-style: none;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* Começa de baixo */
+    justify-content: flex-end;
     min-height: 100%;
 }
 
@@ -277,7 +275,6 @@ button:active {
     margin-right: 10px;
 }
 
-/* Controles de Entrada */
 .calc-input-row {
     display: flex;
     gap: 10px;
@@ -313,7 +310,7 @@ button:active {
 .btn-op-clear { background-color: #6c757d; color: white; margin-top: 10px; }
 
 /* =========================================
-   7. LISTA DE ITENS (CHECKLIST E CRIAR)
+   7. LISTA DE ITENS (CRIAR E CHECKLIST)
    ========================================= */
 .item-compra {
     background: white;
@@ -327,10 +324,11 @@ button:active {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
+/* [ATUALIZADO] Alinhamento do topo do item */
 .item-top-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start; /* Garante alinhamento topo */
 }
 
 .item-nome {
@@ -342,6 +340,7 @@ button:active {
 .item-detalhe {
     font-size: 13px;
     color: #666;
+    margin-top: 4px;
 }
 
 .btn-mini-del {
