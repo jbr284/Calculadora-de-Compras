@@ -6,41 +6,66 @@
     <title>Gestor de Compras</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007bff">
+    <meta name="theme-color" content="#0f172a">
 </head>
 <body>
     <div id="message-container" class="message hidden"></div>
 
     <div id="tela-hub" class="container-center">
-        <h2 style="color:#007bff; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px;">Gestor de Compras</h2>
+        <div class="hub-header">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:10px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <h2>Gestor de Compras</h2>
+            <p>Selecione uma operação</p>
+        </div>
         
-        <button class="btn-big" style="background:#17a2b8;" onclick="abrirModulo('listas')">📋 Listas de Compras</button>
-        <button class="btn-big" style="background:#28a745;" onclick="abrirModulo('comprar')">🛒 Comprar</button>
-        <button class="btn-big" style="background:#ffc107; color:#333;" onclick="abrirModulo('calculadoras')">🧮 Calculadoras</button>
+        <button class="btn-big btn-primary" onclick="abrirModulo('listas')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Listas de Compras
+        </button>
+        
+        <button class="btn-big btn-success" onclick="abrirModulo('comprar')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Modo Supermercado
+        </button>
+        
+        <button class="btn-big btn-warning" onclick="abrirModulo('calculadoras')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="14"/><line x1="16" y1="18" x2="16" y2="18"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="12" y1="18" x2="12" y2="18"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="8" y1="18" x2="8" y2="18"/></svg>
+            Calculadoras
+        </button>
     </div>
 
     <div id="app" class="container hidden">
         
         <div class="app-header">
-            <button class="btn-nav-top" onclick="voltarAoHub()">⬅ Voltar</button>
+            <button class="btn-nav-top" onclick="voltarAoHub()" title="Voltar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
             <div id="app-title" class="app-title">MÓDULO</div>
-            <div style="width: 60px;"></div> </div>
+            <div style="width: 40px;"></div> </div>
 
         <div class="scroll-content">
             
             <div id="module-listas" class="master-module">
-                <div id="lista-cards-planejamento" class="cards-container" style="padding: 15px;"></div>
-                <button class="fab" onclick="iniciarCriacaoLista()">+</button>
+                <div id="lista-cards-planejamento" class="cards-container"></div>
+                <button class="fab" onclick="iniciarCriacaoLista()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
             </div>
 
             <div id="module-comprar" class="master-module">
-                <div id="lista-cards-comprar" class="cards-container" style="padding: 15px;"></div>
+                <div id="lista-cards-comprar" class="cards-container"></div>
             </div>
 
-            <div id="module-calculadoras" class="master-module" style="padding: 15px; text-align: center;">
-                <p style="color: #666; margin-bottom: 20px;">Escolha o modo de cálculo:</p>
-                <button class="btn-option" onclick="abrirSubModulo('calc-simples')">🔢 Calculadora Simples (Fita)</button>
-                <button class="btn-option" onclick="abrirSubModulo('calc-detalhada')" style="margin-top: 15px;">📝 Compra e Salvar Lista</button>
+            <div id="module-calculadoras" class="master-module calc-menu-container">
+                <p class="subtitle">Escolha o modo de cálculo:</p>
+                <button class="btn-option" onclick="abrirSubModulo('calc-simples')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Calculadora de Fita
+                </button>
+                <button class="btn-option" onclick="abrirSubModulo('calc-detalhada')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                    Compra Detalhada & Salvar
+                </button>
             </div>
 
             <div id="sub-calc-simples" class="master-module">
@@ -61,14 +86,17 @@
                         <button class="btn-calc-action btn-op-mul" data-op="mult">×</button>
                         <button class="btn-calc-action btn-op-div" data-op="div">÷</button>
                     </div>
-                    <button class="btn-calc-action btn-op-clear" id="btn-limpar-geral">Limpar Dados</button>
+                    <button class="btn-calc-action btn-op-clear" id="btn-limpar-geral">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        Limpar Dados
+                    </button>
                 </div>
             </div>
 
-            <div id="sub-interface-detalhada" class="master-module" style="padding: 15px;">
-                <input type="text" id="nome-lista-ativa" placeholder="Nome da Lista" style="font-weight: bold; font-size: 18px; margin-bottom: 15px;">
+            <div id="sub-interface-detalhada" class="master-module interface-form">
+                <input type="text" id="nome-lista-ativa" class="input-title" placeholder="Nome da Lista">
                 
-                <form id="form-item">
+                <form id="form-item" class="premium-form">
                     <div class="row">
                         <input type="text" id="produto" placeholder="Produto (Ex: Arroz)">
                         <input type="text" id="marca" placeholder="Marca (Opcional)">
@@ -91,11 +119,12 @@
                             <option value="L">/ L</option>
                         </select>
                     </div>
-                    <button type="button" id="btn-add-item" class="btn-success">Adicionar Item</button>
+                    <button type="button" id="btn-add-item" class="btn-action-primary">Adicionar Item</button>
                 </form>
 
                 <div class="total-bar" id="barra-total">
-                    Total: R$ <span id="total-detalhado">0.00</span>
+                    <span class="total-label">Total da Compra</span>
+                    <span class="total-amount">R$ <span id="total-detalhado">0.00</span></span>
                 </div>
 
                 <div class="tabela-scroll-container">
@@ -111,8 +140,13 @@
                 </div>
 
                 <div class="actions-bar">
-                    <button id="btn-salvar-lista" class="btn-success">💾 Salvar Lista</button>
-                    <button id="btn-limpar-lista" class="btn-danger">🗑️ Limpar Tudo</button>
+                    <button id="btn-salvar-lista" class="btn-action-success">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Salvar Lista
+                    </button>
+                    <button id="btn-limpar-lista" class="btn-action-danger">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
                 </div>
             </div>
 
