@@ -75,7 +75,7 @@ window.abrirModulo = (modulo) => {
         renderizarCards('planejamento');
     } 
     else if (modulo === 'comprar') {
-        document.getElementById('app-title').innerText = 'MODO COMPRAS';
+        document.getElementById('app-title').innerText = 'MODO SUPERMERCADO';
         document.getElementById('module-comprar').classList.add('active');
         renderizarCards('comprar');
     } 
@@ -89,12 +89,12 @@ window.abrirSubModulo = (submodulo) => {
     document.querySelectorAll('.master-module').forEach(m => m.classList.remove('active'));
     
     if (submodulo === 'calc-simples') {
-        document.getElementById('app-title').innerText = 'CALCULADORA SIMPLES';
+        document.getElementById('app-title').innerText = 'CALCULADORA DE FITA';
         document.getElementById('sub-calc-simples').classList.add('active');
         iniciarCalcSimples();
     } 
     else if (submodulo === 'calc-detalhada') {
-        document.getElementById('app-title').innerText = 'COMPRA E SALVAR LISTA';
+        document.getElementById('app-title').innerText = 'COMPRA DETALHADA';
         document.getElementById('sub-interface-detalhada').classList.add('active');
         estadoAtual.modo = 'calc_detalhada';
         iniciarInterfaceDetalhada({ id: null, nome: '', itens: [] });
@@ -110,7 +110,11 @@ window.voltarAoHub = () => {
 /* ========================================================
    RENDERIZAÇÃO DOS CARTÕES DE LISTAS
    ======================================================== */
-function renderizarCards(tipo) { // tipo: 'planejamento' ou 'comprar'
+const iconEdit = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`;
+const iconDel = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+const iconCart = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
+
+function renderizarCards(tipo) { 
     const listas = getListas();
     const container = document.getElementById(tipo === 'planejamento' ? 'lista-cards-planejamento' : 'lista-cards-comprar');
     container.innerHTML = '';
@@ -126,8 +130,8 @@ function renderizarCards(tipo) { // tipo: 'planejamento' ou 'comprar'
         div.className = 'card-lista';
         
         let actions = tipo === 'planejamento' 
-            ? `<button class="btn-card edit" title="Editar">✏️</button><button class="btn-card del" title="Excluir">🗑️</button>`
-            : `<button class="btn-card use" style="width: 80px;">🛒 Ir</button>`;
+            ? `<button class="btn-card edit" title="Editar">${iconEdit}</button><button class="btn-card del" title="Excluir">${iconDel}</button>`
+            : `<button class="btn-card use">${iconCart} Ir</button>`;
 
         div.innerHTML = `
             <div class="card-info"><h3>${lista.nome || 'Lista Sem Nome'}</h3><span>${data} • ${lista.itens.length} itens</span></div>
@@ -159,7 +163,7 @@ function renderizarCards(tipo) { // tipo: 'planejamento' ou 'comprar'
 }
 
 /* ========================================================
-   LÓGICA DA INTERFACE DE ITENS (TUDO EM UM)
+   LÓGICA DA INTERFACE DE ITENS
    ======================================================== */
 window.iniciarCriacaoLista = () => {
     estadoAtual.modo = 'listas_criar';
@@ -173,18 +177,16 @@ function iniciarInterfaceDetalhada(lista) {
     estadoAtual.listaAtiva = JSON.parse(JSON.stringify(lista));
     document.getElementById('nome-lista-ativa').value = lista.nome;
     
-    // MAGIA ACONTECE AQUI: Esconde os campos de preço se estivermos apenas a "Planear"
     const isPlanejamento = (estadoAtual.modo === 'listas_criar' || estadoAtual.modo === 'listas_editar');
     const isCompras = estadoAtual.modo === 'comprar';
 
     document.getElementById('row-preco').style.display = isPlanejamento ? 'none' : 'flex';
     document.getElementById('form-item').style.display = isCompras ? 'none' : 'block';
-    document.getElementById('barra-total').style.display = isPlanejamento ? 'none' : 'block';
+    document.getElementById('barra-total').style.display = isPlanejamento ? 'none' : 'flex'; // Usando flex para o layout premium
     
-    // Configura a tabela
     const header = document.getElementById('header-tabela-criar');
     if (isCompras) {
-        header.classList.add('hidden'); // Modo checklist não tem cabeçalho de tabela
+        header.classList.add('hidden'); 
     } else {
         header.classList.remove('hidden');
         header.querySelectorAll('.col-hide-preco').forEach(col => col.style.display = isPlanejamento ? 'none' : 'block');
@@ -203,11 +205,13 @@ function atualizarUIListaDetalhada() {
     const isPlanejamento = (estadoAtual.modo === 'listas_criar' || estadoAtual.modo === 'listas_editar');
     const isCompras = estadoAtual.modo === 'comprar';
 
+    const iconCheck = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+    const iconUndo = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>`;
+
     estadoAtual.listaAtiva.itens.forEach((item, index) => {
         const div = document.createElement('div');
         
         if (isCompras) {
-            // MODO CHECKLIST DE SUPERMERCADO
             div.className = 'item-compra'; div.classList.add('item-ativo');
             if (item.confirmado) div.classList.add('item-confirmado'); 
 
@@ -219,12 +223,12 @@ function atualizarUIListaDetalhada() {
                 <div class="checklist-controls">
                     <input type="number" class="input-compact inp-qtd" value="${item.quantidade}" placeholder="Qtd">
                     <select class="select-compact sel-unit-qtd">${selUnit(item.unidade)}</select>
-                    <span class="separator" style="color:#999;">x</span>
+                    <span class="separator" style="color:#94a3b8;">x</span>
                     <input type="number" class="input-compact inp-preco" value="${item.preco > 0 ? item.preco : ''}" placeholder="R$">
                     <select class="select-compact sel-unit-preco">${selPriceUnit(item.unidadePreco||'un')}</select>
-                    <button class="btn-confirmar ${item.confirmado ? 'desfazer' : ''}">${item.confirmado ? '↩' : '✔'}</button>
+                    <button class="btn-confirmar ${item.confirmado ? 'desfazer' : ''}">${item.confirmado ? iconUndo : iconCheck}</button>
                 </div>
-                ${item.confirmado ? `<div style="text-align:right; font-size:14px; margin-top:5px; color:#28a745; font-weight:bold;">Total: R$ ${formatarMoeda(item.total)}</div>` : ''}
+                ${item.confirmado ? `<div style="text-align:right; font-size:14px; margin-top:5px; color:var(--success); font-weight:800;">Total: R$ ${formatarMoeda(item.total)}</div>` : ''}
             `;
 
             const btn = div.querySelector('.btn-confirmar');
@@ -240,14 +244,15 @@ function atualizarUIListaDetalhada() {
                 catch (e) { alert(e.message); }
             });
         } else {
-            // MODO TABELA (Criar Lista ou Calculadora Detalhada)
             div.className = 'item-tabela';
+            const miniDel = `<button class="btn-mini-del" onclick="removerItem(${index})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>`;
+            
             if (isPlanejamento) {
                 div.style.gridTemplateColumns = 'minmax(0, 3fr) minmax(0, 2fr) minmax(0, 1.2fr) 30px';
-                div.innerHTML = `<div class="col-texto"><strong>${item.produto}</strong></div><div class="col-texto" style="color:#555;">${item.marca || '-'}</div><div class="col-num">${item.quantidade} ${item.unidade}</div><div><button class="btn-mini-del" onclick="removerItem(${index})">🗑️</button></div>`;
+                div.innerHTML = `<div class="col-texto"><strong>${item.produto}</strong></div><div class="col-texto" style="color:var(--text-muted);">${item.marca || '-'}</div><div class="col-num">${item.quantidade} ${item.unidade}</div><div>${miniDel}</div>`;
             } else {
                 div.style.gridTemplateColumns = 'minmax(0, 3fr) minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 1.5fr) minmax(0, 2fr) 25px';
-                div.innerHTML = `<div class="col-texto"><strong>${item.produto}</strong></div><div class="col-texto" style="color:#555;">${item.marca || '-'}</div><div class="col-num">${item.quantidade} ${item.unidade}</div><div class="col-num">${item.preco > 0 ? formatarMoeda(item.preco) : '-'}</div><div class="col-num" style="font-weight:bold; color:#0099ff;">${item.total > 0 ? formatarMoeda(item.total) : '-'}</div><div><button class="btn-mini-del" onclick="removerItem(${index})">🗑️</button></div>`;
+                div.innerHTML = `<div class="col-texto"><strong>${item.produto}</strong></div><div class="col-texto" style="color:var(--text-muted);">${item.marca || '-'}</div><div class="col-num">${item.quantidade} ${item.unidade}</div><div class="col-num">${item.preco > 0 ? formatarMoeda(item.preco) : '-'}</div><div class="col-num" style="font-weight:700; color:var(--primary);">${item.total > 0 ? formatarMoeda(item.total) : '-'}</div><div>${miniDel}</div>`;
             }
         }
         container.appendChild(div);
@@ -307,7 +312,7 @@ document.getElementById('btn-limpar-lista').addEventListener('click', () => {
 });
 
 /* ========================================================
-   LÓGICA DA CALCULADORA SIMPLES (A FITA DE CÁLCULOS)
+   LÓGICA DA CALCULADORA SIMPLES
    ======================================================== */
 function iniciarCalcSimples() {
     const visorTotal = document.getElementById('valor-total-geral');
@@ -335,7 +340,6 @@ function iniciarCalcSimples() {
         historico.parentElement.scrollTop = historico.parentElement.scrollHeight;
     };
 
-    // Previne duplicação de eventos ao entrar e sair da calculadora
     const botoes = document.querySelectorAll('.btn-calc-action:not(#btn-limpar-geral)');
     botoes.forEach(btn => {
         const novoBtn = btn.cloneNode(true);
@@ -378,5 +382,5 @@ function iniciarCalcSimples() {
     });
 }
 
-// INICIALIZADOR DO SERVICE WORKER (PARA PWA FUNCIONAR OFFLINE)
+// INICIALIZADOR DO SERVICE WORKER
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js').catch(console.error);
