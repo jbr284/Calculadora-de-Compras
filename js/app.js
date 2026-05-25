@@ -122,7 +122,7 @@
        document.querySelectorAll('.master-module').forEach(m => m.classList.remove('active'));
        
        if (submodulo === 'calc-simples') {
-           document.getElementById('app-title').innerText = 'CALCULADORA DE FITA';
+           document.getElementById('app-title').innerText = 'CALCULADORA GERAL';
            document.getElementById('sub-calc-simples').classList.add('active');
            iniciarCalcSimples();
        } 
