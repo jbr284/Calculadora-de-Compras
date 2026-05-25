@@ -32,7 +32,7 @@ body { background-color: var(--bg-color); color: var(--text-main); height: 100vh
 /* ESTRUTURA PRINCIPAL */
 .container-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg-color); width: 100%; position: absolute; top:0; left:0; z-index: 200; padding: 20px;}
 .container { background-color: var(--surface); max-width: 600px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); position: relative; }
-.scroll-content { flex-grow: 1; overflow-y: auto; background: var(--bg-color); position: relative; }
+.scroll-content { flex-grow: 1; overflow-y: auto; background: var(--bg-color); position: relative; display: flex; flex-direction: column; }
 
 /* CABEÇALHOS GLOBAIS */
 .app-header { background: var(--header-bg); color: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 20; flex-shrink: 0;}
@@ -62,7 +62,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .row select { flex: 1; }
 
 /* MÓDULOS */
-.master-module { display: none; flex-direction: column; min-height: 100%; }
+.master-module { display: none; flex-direction: column; min-height: 100%; flex-grow: 1; }
 .master-module.active { display: flex; }
 
 /* LISTAS E CARTÕES */
@@ -88,26 +88,32 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .btn-option { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; font-size: 16px; background: var(--surface); color: var(--primary); border: 2px solid var(--border-color); border-radius: var(--radius-lg); font-weight: 700; width: 100%; box-shadow: var(--shadow-sm);}
 .btn-option:active { border-color: var(--primary); background: #eff6ff;}
 
-/* CALCULADORA DE FITA (VISOR DARK MODE) */
-.calc-total-box { background: var(--header-bg); padding: 25px 20px; text-align: center; flex-shrink: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 -10px 20px rgba(0,0,0,0.2);}
-.calc-total-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 600;}
-.calc-total-value { font-size: 48px; font-weight: 800; color: var(--success); font-family: 'Courier New', Courier, monospace; text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);}
-.tape-container { background: var(--surface); flex-grow: 1; overflow-y: auto; padding: 20px; }
+/* NOVA CALCULADORA DE FITA (TECLADO VIRTUAL INTEGRADO) */
+.calc-fullscreen { height: 100%; }
+.calc-total-box { background: var(--header-bg); padding: 20px; text-align: center; flex-shrink: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 -10px 20px rgba(0,0,0,0.2);}
+.calc-total-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-weight: 600;}
+.calc-total-value { font-size: 42px; font-weight: 800; color: var(--success); font-family: 'Courier New', Courier, monospace; text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);}
+.tape-container { background: var(--surface); flex-grow: 1; overflow-y: auto; padding: 15px; }
 .tape-list { list-style: none; display: flex; flex-direction: column; justify-content: flex-end; min-height: 100%; }
-.tape-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border-color); font-size: 18px; font-family: 'Courier New', Courier, monospace; color: var(--text-main);}
+.tape-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border-color); font-size: 16px; font-family: 'Courier New', Courier, monospace; color: var(--text-main);}
 .tape-item:last-child { font-weight: bold; background-color: var(--bg-color); border-radius: 8px; padding: 10px; margin-top: 5px; border: none;}
-.tape-op { color: var(--primary); font-weight: bold; margin-right: 10px; }
-.calc-controls-area { flex-shrink: 0; background-color: var(--surface); padding: 20px; border-top: 1px solid var(--border-color); box-shadow: 0 -4px 10px rgba(0,0,0,0.02);}
-.calc-input-row { display: flex; gap: 12px; margin-bottom: 12px; }
-.input-calc-big { font-size: 28px; padding: 15px; text-align: right; font-weight: 800; border: 2px solid var(--border-color); border-radius: var(--radius-md); height: 64px; margin: 0; color: var(--header-bg);}
-.input-calc-big:focus { border-color: var(--primary); }
-.btn-calc-action { height: 64px; font-size: 24px; font-weight: bold; border-radius: var(--radius-md); flex: 1; display: flex; align-items: center; justify-content: center; padding: 0; margin: 0; border: none;}
-.btn-op-add { background-color: var(--bg-color); color: var(--success); border: 1px solid var(--border-color);}
-.btn-op-sub { background-color: var(--bg-color); color: var(--danger); border: 1px solid var(--border-color);}
-.btn-op-mul { background-color: var(--bg-color); color: var(--warning); border: 1px solid var(--border-color);}
-.btn-op-div { background-color: var(--bg-color); color: var(--primary); border: 1px solid var(--border-color);}
-.btn-calc-action:active { background-color: var(--border-color); }
-.btn-op-clear { background-color: var(--bg-color); color: var(--text-main); margin-top: 8px; height: 54px; font-size: 15px; border: 1px solid var(--border-color); width: 100%;}
+.tape-op { color: var(--primary); font-weight: bold; margin-right: 5px; }
+
+/* TECLADO E VISORES DA CALCULADORA */
+.calc-controls-area { flex-shrink: 0; background-color: var(--bg-color); border-top: 1px solid var(--border-color); box-shadow: 0 -4px 10px rgba(0,0,0,0.05); padding-bottom: 15px;}
+.calc-display-area { background: var(--surface); padding: 15px 20px; text-align: right; border-bottom: 1px solid var(--border-color); }
+.visor-operacao { font-size: 15px; color: var(--text-muted); height: 20px; font-family: 'Courier New', Courier, monospace; font-weight: 600; margin-bottom: 5px; }
+.input-display { font-size: 38px; font-weight: 800; color: var(--header-bg); font-family: 'Courier New', Courier, monospace; overflow-x: hidden; white-space: nowrap; }
+
+.calc-keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px 20px 10px 20px; }
+.btn-key { background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 24px; font-weight: 700; color: var(--text-main); height: 60px; display: flex; justify-content: center; align-items: center; box-shadow: var(--shadow-sm); user-select: none; touch-action: manipulation; }
+.btn-key:active { background: #e2e8f0; transform: scale(0.95); }
+.btn-key.op-key { background: #eff6ff; color: var(--primary); border-color: #bfdbfe; font-size: 28px;}
+.btn-key.act-key { background: #fee2e2; color: var(--danger); border-color: #fecaca; }
+.btn-key.add-key { background: var(--success); color: white; border-color: var(--success); font-size: 32px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);}
+.btn-key.add-key:active { background: var(--success-hover); }
+
+.btn-op-clear { background-color: var(--bg-color); color: var(--text-main); height: 50px; font-size: 15px; border: 1px solid var(--border-color); width: calc(100% - 40px); margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); font-weight: bold;}
 
 /* INTERFACE FORM E TABELAS */
 .interface-form { padding: 20px; }
