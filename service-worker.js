@@ -1,4 +1,4 @@
-const CACHE_NAME = 'compras-v3';
+const CACHE_NAME = 'compras-v4';
 
 const ASSETS = [
   './',
