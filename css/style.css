@@ -1,165 +1,205 @@
-/* =========================================
-   PALETA PREMIUM & VARIAVEIS
-   ========================================= */
-   :root {
-    --bg-color: #f8fafc;
-    --surface: #ffffff;
-    --header-bg: #0f172a;
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --success: #10b981;
-    --success-hover: #059669;
-    --warning: #f59e0b;
-    --warning-hover: #d97706;
-    --danger: #ef4444;
-    --text-main: #334155;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-    --radius-md: 12px;
-    --radius-lg: 16px;
+/* ==========================================================================
+   ARQUIVO: style-v2.css
+   DESCRIÇÃO: CSS Completo e Atualizado para PWA de Listas de Compras
+   CORREÇÃO DO BUG: Correção do overflow na área de conteúdo para permitir 
+                     a adição ilimitada de listas/itens (> 8) com scroll nativo.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VARIÁVEIS DO SISTEMA & CONFIGURAÇÃO BASE
+   -------------------------------------------------------------------------- */
+:root {
+    /* Cores fiéis ao padrão moderno de Apps */
+    --cor-primaria: #2ecc71;       /* Verde para botões e destaques */
+    --cor-primaria-hover: #27ae60;
+    --cor-fundo-app: #f5f6fa;     /* Cinza claro para o fundo do app */
+    --cor-card: #ffffff;          /* Branco para os cards das listas */
+    --cor-texto-principal: #2f3640;
+    --cor-texto-secundario: #7f8c8d;
+    --cor-nav-fundo: #1e272e;     /* Fundo escuro do menu inferior */
+    --cor-nav-texto: #ffffff;
+    --cor-nav-inativo: #808e9b;
+    
+    /* Estrutura e Espaçamento */
+    --raio-borda: 14px;
+    --espacamento-padrao: 16px;
+    --altura-menu: 70px;
 }
 
-/* =========================================
-   RESET E BASE
-   ========================================= */
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; overflow: hidden; }
-.hidden { display: none !important; }
-
-/* ESTRUTURA PRINCIPAL */
-.container-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg-color); width: 100%; position: absolute; top:0; left:0; z-index: 200; padding: 20px;}
-.container { background-color: var(--surface); max-width: 600px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); position: relative; }
-.scroll-content { flex-grow: 1; overflow-y: auto; background: var(--bg-color); position: relative; display: flex; flex-direction: column; }
-
-/* CABEÇALHOS GLOBAIS */
-.app-header { background: var(--header-bg); color: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 20; flex-shrink: 0;}
-.app-title { font-size: 15px; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 1.5px; text-align: center; flex: 1; color: #f8fafc;}
-.btn-nav-top { background: transparent; border: none; color: white; padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: background 0.2s;}
-.btn-nav-top:active { background: rgba(255,255,255,0.1); }
-
-/* HUB INICIAL */
-.hub-header { text-align: center; margin-bottom: 30px; }
-.hub-header h2 { color: var(--header-bg); font-weight: 800; letter-spacing: -0.5px; font-size: 28px;}
-.hub-header p { color: var(--text-muted); font-size: 16px; margin-top: 5px;}
-
-/* BOTÕES GLOBAIS */
-button { font-family: inherit; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; outline: none; }
-button:active { transform: scale(0.97); }
-
-.btn-big { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 18px 24px; font-size: 16px; margin-bottom: 15px; border-radius: var(--radius-lg); border: none; color: white; width: 100%; max-width: 320px; font-weight: 600; box-shadow: var(--shadow-md); }
-.btn-primary { background: linear-gradient(135deg, var(--primary), #3b82f6); }
-.btn-success { background: linear-gradient(135deg, var(--success), #34d399); }
-.btn-warning { background: linear-gradient(135deg, var(--warning), #fbbf24); color: var(--header-bg) !important; }
-
-/* INPUTS E FORMS */
-input, select { width: 100%; padding: 14px 16px; margin-bottom: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 16px; background: var(--surface); color: var(--text-main); transition: border-color 0.2s, box-shadow 0.2s; }
-input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
-.row { display: flex; gap: 12px; }
-.row input { flex: 2; }
-.row select { flex: 1; }
-
-/* MÓDULOS */
-.master-module { display: none; flex-direction: column; min-height: 100%; flex-grow: 1; }
-.master-module.active { display: flex; }
-
-/* LISTAS E CARTÕES */
-.cards-container { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
-.card-lista { background: var(--surface); padding: 18px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-left: 6px solid var(--primary); display: flex; justify-content: space-between; align-items: center; transition: box-shadow 0.2s;}
-.card-lista:active { box-shadow: var(--shadow-md); }
-.card-info { flex: 1; }
-.card-info h3 { font-size: 17px; margin-bottom: 4px; color: var(--text-main); font-weight: 700; }
-.card-info span { font-size: 13px; color: var(--text-muted); font-weight: 500;}
-.card-actions { display: flex; gap: 8px; }
-.btn-card { width: 42px; height: 42px; border-radius: var(--radius-md); border: none; display: flex; align-items: center; justify-content: center; color: white; }
-.btn-card.use { background-color: var(--success); width: auto; padding: 0 16px; font-weight: 600; font-size: 14px; gap: 6px;}
-.btn-card.edit { background-color: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); }
-.btn-card.del { background-color: #fee2e2; color: var(--danger); }
-.empty-msg { text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 15px; font-weight: 500;}
-
-/* FAB */
-.fab { position: fixed; bottom: 30px; right: 20px; width: 64px; height: 64px; border-radius: 50%; box-shadow: var(--shadow-lg); z-index: 100; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary), #3b82f6); color: white; border: none; }
-
-/* MENU CALCULADORAS */
-.calc-menu-container { padding: 30px 20px; }
-.calc-menu-container .subtitle { text-align: center; color: var(--text-muted); font-weight: 600; margin-bottom: 20px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;}
-.btn-option { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; font-size: 16px; background: var(--surface); color: var(--primary); border: 2px solid var(--border-color); border-radius: var(--radius-lg); font-weight: 700; width: 100%; box-shadow: var(--shadow-sm);}
-.btn-option:active { border-color: var(--primary); background: #eff6ff;}
-
-/* NOVA CALCULADORA DE FITA (TECLADO VIRTUAL INTEGRADO) */
-.calc-fullscreen { height: 100%; }
-.calc-total-box { background: var(--header-bg); padding: 20px; text-align: center; flex-shrink: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 -10px 20px rgba(0,0,0,0.2);}
-.calc-total-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-weight: 600;}
-.calc-total-value { font-size: 42px; font-weight: 800; color: var(--success); font-family: 'Courier New', Courier, monospace; text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);}
-.tape-container { background: var(--surface); flex-grow: 1; overflow-y: auto; padding: 15px; }
-.tape-list { list-style: none; display: flex; flex-direction: column; justify-content: flex-end; min-height: 100%; }
-.tape-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border-color); font-size: 16px; font-family: 'Courier New', Courier, monospace; color: var(--text-main);}
-.tape-item:last-child { font-weight: bold; background-color: var(--bg-color); border-radius: 8px; padding: 10px; margin-top: 5px; border: none;}
-.tape-op { color: var(--primary); font-weight: bold; margin-right: 5px; }
-
-/* TECLADO E VISORES DA CALCULADORA */
-.calc-controls-area { flex-shrink: 0; background-color: var(--bg-color); border-top: 1px solid var(--border-color); box-shadow: 0 -4px 10px rgba(0,0,0,0.05); padding-bottom: 15px;}
-.calc-display-area { background: var(--surface); padding: 15px 20px; text-align: right; border-bottom: 1px solid var(--border-color); }
-.visor-operacao { font-size: 15px; color: var(--text-muted); height: 20px; font-family: 'Courier New', Courier, monospace; font-weight: 600; margin-bottom: 5px; }
-.input-display { font-size: 38px; font-weight: 800; color: var(--header-bg); font-family: 'Courier New', Courier, monospace; overflow-x: hidden; white-space: nowrap; }
-
-.calc-keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px 20px 10px 20px; }
-.btn-key { background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 24px; font-weight: 700; color: var(--text-main); height: 60px; display: flex; justify-content: center; align-items: center; box-shadow: var(--shadow-sm); user-select: none; touch-action: manipulation; }
-.btn-key:active { background: #e2e8f0; transform: scale(0.95); }
-.btn-key.op-key { background: #eff6ff; color: var(--primary); border-color: #bfdbfe; font-size: 28px;}
-.btn-key.act-key { background: #fee2e2; color: var(--danger); border-color: #fecaca; }
-.btn-key.add-key { background: var(--success); color: white; border-color: var(--success); font-size: 32px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);}
-.btn-key.add-key:active { background: var(--success-hover); }
-
-.btn-op-clear { background-color: var(--bg-color); color: var(--text-main); height: 50px; font-size: 15px; border: 1px solid var(--border-color); width: calc(100% - 40px); margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); font-weight: bold;}
-
-/* INTERFACE FORM E TABELAS */
-.interface-form { padding: 20px; }
-.input-title { font-weight: 800; font-size: 20px; border: none; border-bottom: 2px solid var(--border-color); border-radius: 0; padding: 10px 5px; background: transparent; margin-bottom: 20px;}
-.input-title:focus { box-shadow: none; border-color: var(--primary); }
-.premium-form { background: var(--surface); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 20px;}
-
-.btn-action-primary { background: var(--primary); color: white; border-radius: var(--radius-md); padding: 16px; font-weight: 700; margin: 0;}
-.total-bar { display: flex; justify-content: space-between; align-items: center; background: var(--header-bg); color: white; padding: 20px; border-radius: var(--radius-lg); margin-bottom: 20px; box-shadow: var(--shadow-md); }
-.total-label { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600;}
-.total-amount { font-size: 24px; font-weight: 800; color: var(--success); }
-
-.tabela-scroll-container { width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px; background: var(--surface); box-shadow: var(--shadow-sm); overflow: hidden;}
-.tabela-header, .item-tabela { display: grid; gap: 4px; align-items: center; padding: 12px 8px; width: 100%; }
-.tabela-header { background-color: var(--bg-color); color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 11px; text-align: center; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px;}
-.item-tabela { border-bottom: 1px solid var(--border-color); font-size: 13px; text-align: center; }
-.item-tabela:last-child { border-bottom: none; }
-.item-tabela div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.col-texto { text-align: left; padding-left: 4px; }
-.col-num { text-align: center; font-weight: 500;}
-.btn-mini-del { background: transparent; border: none; color: var(--danger); display: flex; justify-content: center; padding: 4px; border-radius: 6px;}
-.btn-mini-del:active { background: #fee2e2; }
-
-.actions-bar { display: flex; gap: 12px; }
-.btn-action-success { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--success); color: white; font-weight: 700; border-radius: var(--radius-md); padding: 16px; margin: 0; border: none;}
-.btn-action-danger { width: 60px; display: flex; align-items: center; justify-content: center; background: var(--bg-color); color: var(--danger); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin: 0; padding: 0;}
-
-/* CHECKLIST SUPERMERCADO */
-.item-compra { background: var(--surface); padding: 16px; margin-bottom: 12px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 12px; transition: 0.2s ease;}
-.item-compra.item-ativo { border-left: 6px solid var(--border-color); }
-.item-compra.item-confirmado { border-left: 6px solid var(--success); background-color: #f0fdf4; border-color: #bbf7d0;}
-.checklist-header { display: flex; gap: 10px; align-items: center; }
-.input-marca-inline { border: none; border-bottom: 1px dashed var(--text-muted); padding: 4px; width: 100%; font-size: 14px; background: transparent; margin:0; color: var(--text-main);}
-.input-marca-inline:focus { border-color: var(--primary); box-shadow: none;}
-.checklist-controls { display: grid; grid-template-columns: 1.2fr 1fr 0.2fr 1.2fr 1fr 45px; gap: 8px; align-items: center; }
-.input-compact { padding: 0 4px !important; margin: 0 !important; font-size: 15px; text-align: center; height: 42px; border-radius: 8px; border: 1px solid var(--border-color); font-weight: 600;}
-.select-compact { padding: 0 4px !important; margin: 0 !important; font-size: 13px; background-color: var(--bg-color); text-align: center; height: 42px; border-radius: 8px; border: 1px solid var(--border-color); font-weight: 600;}
-.btn-confirmar { background: var(--success); color: white; border-radius: 8px; padding: 0 !important; margin: 0 !important; height: 42px; width: 100%; display: flex; align-items: center; justify-content: center; border: none;}
-.btn-confirmar.desfazer { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color);}
-
-@media (max-width: 400px) {
-    .checklist-controls { grid-template-columns: 1fr 1fr; row-gap: 12px; }
-    .checklist-controls .separator { display: none; }
-    .btn-confirmar { grid-column: span 2; height: 48px; }
+/* Reset total para comportamento previsível em Mobile (iOS / Android) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Remove o flash azul ao tocar no mobile */
 }
 
-/* TOAST MENSAGENS */
-.message { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; z-index: 2000; box-shadow: var(--shadow-lg); text-align: center; width: auto; opacity: 0; transition: 0.3s; pointer-events: none;}
-.message.show { opacity: 1; }
+/* --------------------------------------------------------------------------
+   2. ESTRUTURA DO APLICATIVO (VIEWPORT FIXA STYLE)
+   -------------------------------------------------------------------------- */
+html, body {
+    width: 100%;
+    height: 100%;
+    height: 100dvh; /* Dynamic Viewport Height para corrigir comportamento do Safari/Chrome mobile */
+    background-color: var(--cor-fundo-app);
+    color: var(--cor-texto-principal);
+    overflow: hidden; /* IMPORTANTE: Trava o ecrã inteiro para evitar que a barra do browser balance */
+}
+
+/* Container Pai da Aplicação */
+#app {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   3. CABEÇALHO (HEADER)
+   -------------------------------------------------------------------------- */
+.header-app {
+    flex-shrink: 0;
+    background-color: var(--cor-card);
+    padding: calc(var(--espacamento-padrao) * 1.5) var(--espacamento-padrao);
+    text-align: center;
+    border-bottom: 1px solid #dcdde1;
+    z-index: 10;
+}
+
+.header-app h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--cor-texto-principal);
+    letter-spacing: -0.5px;
+}
+
+/* --------------------------------------------------------------------------
+   4. CONTEÚDO PRINCIPAL (AQUI ESTAVA O BUG DOS 8 ITENS!)
+   -------------------------------------------------------------------------- */
+.conteudo-principal {
+    flex: 1;                 /* Ocupa todo o espaço vertical disponível */
+    overflow-y: auto;        /* SOLUÇÃO DO BUG: Ativa a rolagem vertical assim que ultrapassa o ecrã */
+    -webkit-overflow-scrolling: touch; /* Garante scroll suave e nativo no iOS */
+    padding: var(--espacamento-padrao);
+}
+
+/* --------------------------------------------------------------------------
+   5. O GRID DE LISTAS (2 COLUNAS CONFORME DESIGN)
+   -------------------------------------------------------------------------- */
+.grid-listas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Exatamente 2 colunas */
+    gap: var(--espacamento-padrao);
+    /* Margem extra no fim para os cards não ficarem tapados pelo botão flutuante ou menu */
+    padding-bottom: calc(var(--altura-menu) + 40px); 
+}
+
+/* Estilização Individual dos Cards das Listas */
+.card-lista {
+    background-color: var(--cor-card);
+    border-radius: var(--raio-borda);
+    padding: 24px var(--espacamento-padrao);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 125px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+/* Efeito tátil de toque (App Feel) */
+.card-lista:active {
+    transform: scale(0.96);
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.card-lista .icone-lista {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.card-lista .titulo-lista {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--cor-texto-principal);
+}
+
+.card-lista .contador-itens {
+    font-size: 0.8rem;
+    color: var(--cor-texto-secundario);
+    margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   6. BOTÃO FLUTUANTE DE ADICIONAR (FAB)
+   -------------------------------------------------------------------------- */
+.btn-flutuante {
+    position: fixed;
+    bottom: calc(var(--altura-menu) + 20px); /* Sempre posicionado acima do menu */
+    right: 20px;
+    background-color: var(--cor-primaria);
+    color: white;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 4px 16px rgba(46, 204, 113, 0.4);
+    cursor: pointer;
+    z-index: 99;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-flutuante:active {
+    transform: scale(0.90);
+    background-color: var(--cor-primaria-hover);
+}
+
+/* --------------------------------------------------------------------------
+   7. BARRA DE NAVEGAÇÃO INFERIOR (BOTTOM NAVIGATION)
+   -------------------------------------------------------------------------- */
+.menu-inferior {
+    flex-shrink: 0;
+    height: var(--altura-menu);
+    background-color: var(--cor-nav-fundo);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    /* Suporte para safe areas de ecrãs com notch (ex: iPhones modernos) */
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 100;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.item-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--cor-nav-inativo);
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    width: 25%;
+    height: 100%;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.item-menu.ativo {
+    color: var(--cor-nav-texto);
+}
+
+.item-menu i, 
+.item-menu svg {
+    font-size: 1.4rem;
+    margin-bottom: 4px;
