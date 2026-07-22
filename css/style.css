@@ -33,7 +33,7 @@ body { background-color: var(--bg-color); color: var(--text-main); height: 100vh
 .container-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg-color); width: 100%; position: absolute; top:0; left:0; z-index: 200; padding: 20px;}
 .container { background-color: var(--surface); max-width: 600px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); position: relative; }
 
-/* O MESTRE DA ROLAGEM: Esta div cuida de rolar a tela toda */
+/* O MESTRE DA ROLAGEM: Este contêiner permite que tudo cresça e role para baixo */
 .scroll-content { flex-grow: 1; overflow-y: auto; background: var(--bg-color); position: relative; display: flex; flex-direction: column; }
 
 /* CABEÇALHOS GLOBAIS */
@@ -63,12 +63,12 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .row input { flex: 2; }
 .row select { flex: 1; }
 
-/* MÓDULOS (Adicionado padding-bottom para dar espaço ao FAB) */
-.master-module { display: none; flex-direction: column; min-height: 100%; flex-grow: 1; padding-bottom: 100px; }
+/* MÓDULOS (flex-shrink: 0 proíbe o encolhimento, forçando a rolagem principal) */
+.master-module { display: none; flex-direction: column; min-height: 100%; flex-grow: 1; flex-shrink: 0; padding-bottom: 120px; }
 .master-module.active { display: flex; }
 
 /* LISTAS E CARTÕES */
-.cards-container { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+.cards-container { display: flex; flex-direction: column; gap: 16px; padding: 20px; flex-shrink: 0; padding-bottom: 120px; }
 .card-lista { background: var(--surface); padding: 18px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-left: 6px solid var(--primary); display: flex; justify-content: space-between; align-items: center; transition: box-shadow 0.2s;}
 .card-lista:active { box-shadow: var(--shadow-md); }
 .card-info { flex: 1; }
@@ -85,7 +85,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .fab { position: fixed; bottom: 30px; right: 20px; width: 64px; height: 64px; border-radius: 50%; box-shadow: var(--shadow-lg); z-index: 100; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary), #3b82f6); color: white; border: none; }
 
 /* MENU CALCULADORAS */
-.calc-menu-container { padding: 30px 20px; }
+.calc-menu-container { padding: 30px 20px; flex-shrink: 0; padding-bottom: 100px; }
 .calc-menu-container .subtitle { text-align: center; color: var(--text-muted); font-weight: 600; margin-bottom: 20px; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;}
 .btn-option { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; font-size: 16px; background: var(--surface); color: var(--primary); border: 2px solid var(--border-color); border-radius: var(--radius-lg); font-weight: 700; width: 100%; box-shadow: var(--shadow-sm);}
 .btn-option:active { border-color: var(--primary); background: #eff6ff;}
@@ -117,8 +117,8 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
 .btn-op-clear { background-color: var(--bg-color); color: var(--text-main); height: 50px; font-size: 15px; border: 1px solid var(--border-color); width: calc(100% - 40px); margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); font-weight: bold;}
 
-/* INTERFACE FORM E TABELAS */
-.interface-form { padding: 20px; }
+/* INTERFACE FORM E TABELAS (flex-shrink: 0 proíbe esmagamento) */
+.interface-form { padding: 20px; flex-shrink: 0; }
 .input-title { font-weight: 800; font-size: 20px; border: none; border-bottom: 2px solid var(--border-color); border-radius: 0; padding: 10px 5px; background: transparent; margin-bottom: 20px;}
 .input-title:focus { box-shadow: none; border-color: var(--primary); }
 .premium-form { background: var(--surface); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 20px;}
@@ -128,8 +128,8 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .total-label { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600;}
 .total-amount { font-size: 24px; font-weight: 800; color: var(--success); }
 
-/* A MÁGICA ACONTECE AQUI: A tabela cresce infinitamente (height: auto) */
-.tabela-scroll-container { width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px; background: var(--surface); box-shadow: var(--shadow-sm); height: auto; overflow: hidden; }
+/* MÁGICA FINAL: flex-shrink: 0 não deixa a tabela desaparecer */
+.tabela-scroll-container { width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px; background: var(--surface); box-shadow: var(--shadow-sm); height: auto; flex-shrink: 0; overflow: hidden; }
 .tabela-header, .item-tabela { display: grid; gap: 4px; align-items: center; padding: 12px 8px; width: 100%; }
 .tabela-header { background-color: var(--bg-color); color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 11px; text-align: center; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px;}
 .item-tabela { border-bottom: 1px solid var(--border-color); font-size: 13px; text-align: center; }
@@ -140,7 +140,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .btn-mini-del { background: transparent; border: none; color: var(--danger); display: flex; justify-content: center; padding: 4px; border-radius: 6px;}
 .btn-mini-del:active { background: #fee2e2; }
 
-.actions-bar { display: flex; gap: 12px; }
+.actions-bar { display: flex; gap: 12px; flex-shrink: 0; }
 .btn-action-success { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--success); color: white; font-weight: 700; border-radius: var(--radius-md); padding: 16px; margin: 0; border: none;}
 .btn-action-danger { width: 60px; display: flex; align-items: center; justify-content: center; background: var(--bg-color); color: var(--danger); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin: 0; padding: 0;}
 
