@@ -2,24 +2,24 @@
    PALETA PREMIUM & VARIAVEIS
    ========================================= */
    :root {
-     --bg-color: #f8fafc;
-     --surface: #ffffff;
-     --header-bg: #0f172a;
-     --primary: #2563eb;
-     --primary-hover: #1d4ed8;
-     --success: #10b981;
-     --success-hover: #059669;
-     --warning: #f59e0b;
-     --warning-hover: #d97706;
-     --danger: #ef4444;
-     --text-main: #334155;
-     --text-muted: #64748b;
-     --border-color: #e2e8f0;
-     --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-     --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-     --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-     --radius-md: 12px;
-     --radius-lg: 16px;
+    --bg-color: #f8fafc;
+    --surface: #ffffff;
+    --header-bg: #0f172a;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --success: #10b981;
+    --success-hover: #059669;
+    --warning: #f59e0b;
+    --warning-hover: #d97706;
+    --danger: #ef4444;
+    --text-main: #334155;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    --radius-md: 12px;
+    --radius-lg: 16px;
 }
 
 /* =========================================
@@ -32,6 +32,8 @@ body { background-color: var(--bg-color); color: var(--text-main); height: 100vh
 /* ESTRUTURA PRINCIPAL */
 .container-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg-color); width: 100%; position: absolute; top:0; left:0; z-index: 200; padding: 20px;}
 .container { background-color: var(--surface); max-width: 600px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); position: relative; }
+
+/* O MESTRE DA ROLAGEM: Esta div cuida de rolar a tela toda */
 .scroll-content { flex-grow: 1; overflow-y: auto; background: var(--bg-color); position: relative; display: flex; flex-direction: column; }
 
 /* CABEÇALHOS GLOBAIS */
@@ -61,8 +63,8 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .row input { flex: 2; }
 .row select { flex: 1; }
 
-/* MÓDULOS */
-.master-module { display: none; flex-direction: column; min-height: 100%; flex-grow: 1; }
+/* MÓDULOS (Adicionado padding-bottom para dar espaço ao FAB) */
+.master-module { display: none; flex-direction: column; min-height: 100%; flex-grow: 1; padding-bottom: 100px; }
 .master-module.active { display: flex; }
 
 /* LISTAS E CARTÕES */
@@ -115,7 +117,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
 .btn-op-clear { background-color: var(--bg-color); color: var(--text-main); height: 50px; font-size: 15px; border: 1px solid var(--border-color); width: calc(100% - 40px); margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); font-weight: bold;}
 
-/* INTERFACE FORM E TABELAS (MODIFICADO APENAS AQUI PARA CORRIGIR O BUG) */
+/* INTERFACE FORM E TABELAS */
 .interface-form { padding: 20px; }
 .input-title { font-weight: 800; font-size: 20px; border: none; border-bottom: 2px solid var(--border-color); border-radius: 0; padding: 10px 5px; background: transparent; margin-bottom: 20px;}
 .input-title:focus { box-shadow: none; border-color: var(--primary); }
@@ -126,8 +128,8 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .total-label { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600;}
 .total-amount { font-size: 24px; font-weight: 800; color: var(--success); }
 
-/* AQUI ESTÁ A CORREÇÃO REAL: overflow alterado para auto e adicionado altura máxima */
-.tabela-scroll-container { width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px; background: var(--surface); box-shadow: var(--shadow-sm); overflow-y: auto; max-height: 320px;}
+/* A MÁGICA ACONTECE AQUI: A tabela cresce infinitamente (height: auto) */
+.tabela-scroll-container { width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px; background: var(--surface); box-shadow: var(--shadow-sm); height: auto; overflow: hidden; }
 .tabela-header, .item-tabela { display: grid; gap: 4px; align-items: center; padding: 12px 8px; width: 100%; }
 .tabela-header { background-color: var(--bg-color); color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 11px; text-align: center; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px;}
 .item-tabela { border-bottom: 1px solid var(--border-color); font-size: 13px; text-align: center; }
@@ -156,9 +158,9 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .btn-confirmar.desfazer { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color);}
 
 @media (max-width: 400px) {
-     .checklist-controls { grid-template-columns: 1fr 1fr; row-gap: 12px; }
-     .checklist-controls .separator { display: none; }
-     .btn-confirmar { grid-column: span 2; height: 48px; }
+    .checklist-controls { grid-template-columns: 1fr 1fr; row-gap: 12px; }
+    .checklist-controls .separator { display: none; }
+    .btn-confirmar { grid-column: span 2; height: 48px; }
 }
 
 /* TOAST MENSAGENS */
